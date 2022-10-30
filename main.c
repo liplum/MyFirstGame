@@ -39,7 +39,7 @@ int waving(int value);
 void clearScreen() {
 #ifdef _WIN32
   system("cls");
-#elif __unix__
+#else
   system("clear");
 #endif
 }
@@ -83,6 +83,7 @@ int main(void) {
     .level=1,
     .exp=0
   };
+  clearScreen();
   printf("                ********************\n");
   printf("                * First Game V 1.4 *\n");
   printf("                ********************       Last Change: 10/30/202    by Liplum\n");
@@ -756,14 +757,13 @@ int main(void) {
     printf("             ***********\n");
     printf("Press Enter to restart.");
     getchar();
-    clearScreen();
     goto part_slime;
   }
   win:
   {
     getchar();
     printf("\n\n\n\n\n------*------*------*------*------*------*------*------*------*------\n\n\n");
-    printf("Congratulations! you cleared the game. Thank you for playing, please wait for my next work！ UwU\n");
+    printf("Congratulations! you cleared the game. Thank you for playing, please wait for my next work! UwU\n");
     printf("\n\n------*------*------*------*------*------*------*------*------*------\n");
   }
 
