@@ -1,3 +1,7 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-msc51-cpp"
+#pragma ide diagnostic ignored "cert-msc50-cpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -32,10 +36,12 @@ struct Upgrade createUpgrade(int hp, int dmg, int armor) {
 
 // Progress
 int ending = 0, turn = 0, part = 1;
-struct Player player = (struct Player) {
-  .curHp=100, .maxHp = 100, .damage =7, .armor=3, .level=1, .exp=0
-};
 
+int waving(int value);
+
+struct Player player;
+
+float randomness = 0.1f;
 struct Enemy curEnemy;
 
 void playerAttributesUpgrade(struct Upgrade upgrade) {
@@ -60,7 +66,14 @@ void newTurnStart() {
 }
 
 int main(void) {
-
+  srand((unsigned) time(NULL));
+  player = (struct Player) {
+    .maxHp = waving(100),
+    .damage =waving(7),
+    .armor=3,
+    .level=1,
+    .exp=0
+  };
   printf("                ********************\n");
   printf("                * First Game V 1.4 *\n");
   printf("                ********************       Last Change: 10/30/202    by Liplum\n");
@@ -75,10 +88,10 @@ int main(void) {
     getchar();
     curEnemy = (struct Enemy) {
       .name = "Slime",
-      .curHp = 50,
-      .damage = 12,
+      .curHp = waving(50),
+      .damage = waving(12),
       .armor = 0,
-      .exp = 200
+      .exp = waving(200)
     };
     printf("You were found in a forest.\n");
     getchar();
@@ -93,19 +106,19 @@ int main(void) {
     loop_slime:
     {
       int actionChoice;
-      int playerCaused = 0;
-      int slimeCaused = 0;
+      int playerCaused;
+      int slimeCaused;
       newTurnStart();
       scanf("%d", &actionChoice);
       switch (actionChoice) {
         case ATTACK: {
-          playerCaused = player.damage;
+          playerCaused = waving(player.damage);
           curEnemy.curHp -= playerCaused;
-          slimeCaused = curEnemy.damage - player.armor;
+          slimeCaused = waving(curEnemy.damage) - player.armor;
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
             printf("\nYou slashed the enemy and cause %d damage!\n\n", playerCaused);
-            printf("\nSlime hit you and cause %d!", slimeCaused);
+            printf("\nSlime hit you and caused %d damage!", slimeCaused);
             getchar();
             getchar();
             goto loop_slime;
@@ -127,7 +140,7 @@ int main(void) {
         }
           break;
         case PARRY: {
-          slimeCaused = curEnemy.damage - player.armor * 2;
+          slimeCaused = waving(curEnemy.damage) - player.armor * 2;
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
             printf("\nYou raised the shield and defended.\n");
@@ -146,7 +159,7 @@ int main(void) {
           break;
         case Withdraw: {
           printf("\nSlime stuck your legs.\n");
-          slimeCaused = curEnemy.damage;
+          slimeCaused = waving(curEnemy.damage);
           player.curHp -= curEnemy.damage;
           if (player.curHp > 0) {
             printf("\nYou were distracted and caught by slimes. You lost %d damage.\n\n", slimeCaused);
@@ -176,10 +189,10 @@ int main(void) {
     ending = 0;
     curEnemy = (struct Enemy) {
       .name = "Rat",
-      .curHp = 85,
-      .damage = 17,
+      .curHp = waving(85),
+      .damage = waving(17),
       .armor = 1,
-      .exp = 300
+      .exp = waving(300)
     };
     system("cls");
     if (player.exp >= 100 && player.level == 1) {
@@ -210,35 +223,35 @@ int main(void) {
     loop_rat:
     {
       int actionChoice;
-      int ratCaused = 0;
-      int playerCaused = 0;
-      int thisTurnRatSkill = 0;
-      int thisTurnPlayerSkill1 = 0;
+      int ratCaused;
+      int playerCaused;
+      int thisTurnRatSkill;
+      int thisTurnPlayerSkill1;
       newTurnStart();
       scanf("%d", &actionChoice);
       switch (actionChoice) {
         case ATTACK: {
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.level == 2) {// if trigger
-            playerCaused = player.damage * 3;
+            playerCaused = waving(player.damage) * 3;
             curEnemy.curHp -= playerCaused;
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 1;
           } else {
-            playerCaused = player.damage - curEnemy.armor;
+            playerCaused = waving(player.damage) - curEnemy.armor;
             curEnemy.curHp -= playerCaused;
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 0;
           }
           // Check rat's skill
           if (ratSkillCounter >= 2) { // if trigger
-            ratCaused = curEnemy.damage * 2;
+            ratCaused = waving(curEnemy.damage) * 2;
             ratCaused -= player.armor;
             player.curHp -= ratCaused;
             ratSkillCounter = 0;
             thisTurnRatSkill = 1;
           } else {
-            ratCaused = curEnemy.damage - player.armor;
+            ratCaused = waving(curEnemy.damage) - player.armor;
             player.curHp -= ratCaused;
             ratSkillCounter += 1;
             thisTurnRatSkill = 0;
@@ -285,13 +298,13 @@ int main(void) {
         case PARRY: {
           // Check rat's skill
           if (ratSkillCounter >= 2) {
-            ratCaused = curEnemy.damage * 2;
+            ratCaused =waving( curEnemy.damage) * 2;
             ratCaused = ratCaused - player.armor * 2;
             player.curHp -= ratCaused;
             ratSkillCounter = 0;
             thisTurnRatSkill = 1;
           } else {
-            ratCaused = curEnemy.damage - player.armor * 2;
+            ratCaused = waving(curEnemy.damage) - player.armor * 2;
             player.curHp -= ratCaused;
             ratSkillCounter += 1;
             thisTurnRatSkill = 0;
@@ -324,7 +337,7 @@ int main(void) {
           break;
         case Withdraw: {
           printf("\nThe giant rat bit your shoulder. You can't not move!\n");
-          ratCaused = curEnemy.damage * 1.5f;
+          ratCaused = waving(curEnemy.damage) * 1.5f;
           player.curHp -= ratCaused;
           if (player.curHp > 0) {
             printf("\nYou were controlled by a giant rat, and it bit at your neck causing %d damage!\n\n",
@@ -355,10 +368,10 @@ int main(void) {
   {
     curEnemy = (struct Enemy) {
       .name = "Goblin Mage",
-      .curHp = 130,
-      .damage = 25,
+      .curHp = waving(130),
+      .damage = waving(25),
       .armor = 8,
-      .exp = 600
+      .exp = waving(600)
     };
     part = 3;
     turn = 0;
@@ -402,30 +415,29 @@ int main(void) {
     int playerSkill2Counter = 0;
     loop_goblin:
     {
-      int GRand = 0;
+      int GRand;
       int actionChoice;
-      int thisTurnPlayerSkill1 = 0;
+      int thisTurnPlayerSkill1;
       int thisTurnPlayerSkill2 = 0;
       int thisTurnGoblinSkill = 0;
       int goblinCaused = 0;
-      int playerCaused = 0;
+      int playerCaused;
       newTurnStart();
       scanf("%d", &actionChoice);
       switch (actionChoice) {
         case ATTACK: {
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.level >= 2) {
-            playerCaused = player.damage * 3;
+            playerCaused = waving(player.damage) * 3;
             thisTurnPlayerSkill1 = 1;
           } else {
-            playerCaused = player.damage - curEnemy.armor;
+            playerCaused = waving(player.damage) - curEnemy.armor;
             thisTurnPlayerSkill1 = 0;
           }
 
           // Check goblin charging
           switch (gSkillCounter) {
             case 0: { // Goblin is not charging. roll to start charging
-              srand((unsigned) time(NULL));
               for (int i = 0; i < 1; i++) {
                 GRand = rand() % 5;
               }
@@ -436,7 +448,7 @@ int main(void) {
                 thisTurnGoblinSkill = 0;
               } else { // Goblin won't charge
                 curEnemy.curHp -= playerCaused;
-                goblinCaused = curEnemy.damage - player.armor;
+                goblinCaused = waving(curEnemy.damage) - player.armor;
                 player.curHp -= goblinCaused;
                 thisTurnGoblinSkill = 0;
               }
@@ -449,9 +461,9 @@ int main(void) {
               thisTurnGoblinSkill = 0;
             }
               break;
-            case 2: { // Goblin has charged and prepare to release.
+            case 2: { // Goblin has charged up
               curEnemy.curHp -= playerCaused;
-              goblinCaused = (curEnemy.damage * 3) - (player.armor / 2);
+              goblinCaused = (waving(curEnemy.damage) * 3) - (player.armor / 2);
               player.curHp -= goblinCaused;
               gSkillCounter = 0;
               thisTurnGoblinSkill = 1;
@@ -484,12 +496,14 @@ int main(void) {
               default:
                 break;
             }
-            if (thisTurnGoblinSkill == 1)
+            if (thisTurnGoblinSkill == 1) {
               printf(
                 "The goblin mage has charged up and released pyroblast on you, inflicting a huge damage up to %d!\n\n",
                 goblinCaused);
-            if (gSkillCounter == 0)
+            }
+            if (gSkillCounter == 0) {
               printf("The goblin mage cast a fireball on you, dealing %d damage.\n\n", goblinCaused);
+            }
             getchar();
             getchar();
             goto loop_goblin;
@@ -520,7 +534,6 @@ int main(void) {
           // Check goblin charging
           switch (gSkillCounter) {
             case 0: { // Goblin is not charging. roll to start charging
-              srand((unsigned) time(NULL));
               for (int i = 0; i < 1; i++) {
                 GRand = rand() % 5;
               }
@@ -530,10 +543,10 @@ int main(void) {
               } else { // Goblin won't charge
                 // Check player skill "Offense To Defense"
                 if (playerSkill2Counter >= 3 && player.level >= 3) {
-                  goblinCaused = curEnemy.damage * 0.1f;
+                  goblinCaused = waving(curEnemy.damage) * 0.1f;
                   thisTurnPlayerSkill2 = 1;
                 } else {
-                  goblinCaused = curEnemy.damage - player.armor * 2;
+                  goblinCaused = waving(curEnemy.damage) - player.armor * 2;
                   thisTurnPlayerSkill2 = 0;
                 }
                 player.curHp -= goblinCaused;
@@ -548,7 +561,7 @@ int main(void) {
               break;
             case 2: { // Goblin has charged and prepare to release.
               // Check player skill "Offense To Defense"
-              goblinCaused = curEnemy.damage * 3 - player.armor;
+              goblinCaused = waving(curEnemy.damage) * 3 - player.armor;
               if (playerSkill2Counter >= 3 && player.level >= 3) {
                 goblinCaused *= 0.1f; // -90% damage
                 thisTurnPlayerSkill2 = 1;
@@ -622,7 +635,6 @@ int main(void) {
           // Check goblin charging
           switch (gSkillCounter) {
             case 0: {  // Goblin is not charging. roll to start charging
-              srand((unsigned) time(NULL));
               for (int i = 0; i < 1; i++) {
                 GRand = rand() % 5;
               }
@@ -630,7 +642,7 @@ int main(void) {
                 gSkillCounter = 1;
                 thisTurnGoblinSkill = 0;
               } else { // Goblin won't charge
-                goblinCaused = curEnemy.damage * 1.5f;
+                goblinCaused = waving(curEnemy.damage) * 1.5f;
                 player.curHp -= goblinCaused;
                 thisTurnGoblinSkill = 0;
               }
@@ -642,7 +654,7 @@ int main(void) {
               break;
             }
             case 2: { // Goblin has charged and prepare to release.
-              goblinCaused = (curEnemy.damage * 3) * 1.5f;
+              goblinCaused = (waving(curEnemy.damage) * 3) * 1.5f;
               player.curHp -= goblinCaused;
               gSkillCounter = 0;
               thisTurnGoblinSkill = 1;
@@ -750,3 +762,21 @@ int main(void) {
   return 0;
 }
 
+/// Return a random number between [0f,1f]
+float randf() {
+  return (float) rand() / (float) RAND_MAX;
+}
+
+
+/// Return a random number between [min,max]
+float randfIn(float min, float max) {
+  return randf() * max + min;
+}
+
+
+int waving(int value) {
+  return (int) ((float) value * randfIn(1.0f - randomness, 1.0f + randomness));
+}
+
+
+#pragma clang diagnostic pop
