@@ -34,10 +34,19 @@ struct Upgrade createUpgrade(int hp, int dmg, int armor) {
   return (struct Upgrade) {.hp = hp, .damage=dmg, .armor=armor};
 }
 
+int waving(int value);
+
+void clearScreen() {
+#ifdef _WIN32
+  system("cls");
+#elif __unix__
+  system("clear");
+#endif
+}
+
 // Progress
 int ending = 0, turn = 0, part = 1;
 
-int waving(int value);
 
 struct Player player;
 
@@ -57,7 +66,7 @@ void playerRestoreAttributes() {
 
 void newTurnStart() {
   turn++;
-  system("cls");
+  clearScreen();
   printf("------------------------------------------------------------");
   printf("\n[Turn %d]\n\n", turn);
   printf("Your Hp is %d. The %s Hp is %d.\n", player.curHp, curEnemy.name, curEnemy.curHp);
@@ -194,7 +203,7 @@ int main(void) {
       .armor = 1,
       .exp = waving(300)
     };
-    system("cls");
+    clearScreen();
     if (player.exp >= 100 && player.level == 1) {
       player.level += 1;
       player.exp -= 100;
@@ -298,7 +307,7 @@ int main(void) {
         case PARRY: {
           // Check rat's skill
           if (ratSkillCounter >= 2) {
-            ratCaused =waving( curEnemy.damage) * 2;
+            ratCaused = waving(curEnemy.damage) * 2;
             ratCaused = ratCaused - player.armor * 2;
             player.curHp -= ratCaused;
             ratSkillCounter = 0;
@@ -377,7 +386,7 @@ int main(void) {
     turn = 0;
     ending = 0;
     int gSkillCounter = 0;
-    system("cls");
+    clearScreen();
     if (player.exp >= 300 && player.level == 2) {
       player.level += 1;
       player.exp -= 300;
@@ -741,13 +750,13 @@ int main(void) {
       // do nothing
     }
 
-    system("cls");
+    clearScreen();
     printf("             ***********\n");
     printf("             *Game Over*\n");
     printf("             ***********\n");
     printf("Press Enter to restart.");
     getchar();
-    system("cls");
+    clearScreen();
     goto part_slime;
   }
   win:
