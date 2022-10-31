@@ -2,21 +2,6 @@ name: Build My First Game
 on: push
 
 jobs:
-  build-Windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Build Game
-        run: |
-          make main
-          ren "main" "MyFirstGame-Windows.exe"
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Windows
-          path: MyFirstGame-Windows.exe
-
   build-Linux:
     runs-on: ubuntu-latest
     steps:
