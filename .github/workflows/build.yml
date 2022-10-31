@@ -5,12 +5,12 @@ jobs:
   build-Windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build Game
         run: |
           make main
-          ren "main.exe" "MyFirstGame-Windows.exe"
+          ren "main" "MyFirstGame-Windows.exe"
 
       - uses: actions/upload-artifact@v2
         with:
@@ -20,7 +20,7 @@ jobs:
   build-Linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build Game
         run: |
@@ -35,7 +35,7 @@ jobs:
   build-macOS:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build Game
         run: |
