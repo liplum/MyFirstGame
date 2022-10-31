@@ -1,0 +1,48 @@
+name: Build My First Game
+on: push
+
+jobs:
+  build-Windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Game
+        run: |
+          make main
+          ren "main.exe" "MyFirstGame-Windows.exe"
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Windows
+          path: MyFirstGame-Windows.exe
+
+  build-Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Game
+        run: |
+          make main
+          mv "main" "MyFirstGame-Linux"
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Linux
+          path: MyFirstGame-Linux
+
+  build-macOS:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Game
+        run: |
+          make main
+          mv "main" "MyFirstGame-macOS"
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macOS
+          path: MyFirstGame-macOS
