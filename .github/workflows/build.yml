@@ -31,10 +31,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROSS_COMPILE_ARCH: ${{ matrix.platform.arch }}
         run: |
-          cmake build .
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
           ls -R
 
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.platform.os }} + ${{ matrix.platform.arch }}
-          path: bin/*
+          path: build/bin/*
