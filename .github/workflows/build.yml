@@ -36,5 +36,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.platform.os }}
+          name: ${{ matrix.platform.os + matrix.platform.arch }}
           path: MyFirstGame
