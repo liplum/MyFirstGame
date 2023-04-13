@@ -9,9 +9,9 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - { name: 'Linux (x64)'   ,os: ubuntu-22.04              }
-          - { name: 'Windows (x64)' ,os: windows-2022              }
-          - { name: 'Mac (x64)'     ,os: macos-12                  }
+          - { name: 'Linux (x64)'   ,os: ubuntu-22.04 }
+          - { name: 'Windows (x64)' ,os: windows-2022 }
+          - { name: 'Mac (x64)'     ,os: macos-12 }
           - { name: 'Mac (arm64)'   ,os: macos-12     ,arch: arm64 }
 
     runs-on: ${{ matrix.platform.os }}
@@ -36,5 +36,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.platform.os + matrix.platform.arch }}
+          name: ${{ matrix.platform.os }} + ${{ matrix.platform.arch }}
           path: MyFirstGame
