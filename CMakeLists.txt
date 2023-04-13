@@ -5,4 +5,4 @@ add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(MyFirstGame main.c)
+add_executable(MyFirstGame src/main.c)
