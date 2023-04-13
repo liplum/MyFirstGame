@@ -93,9 +93,9 @@ int main(void) {
     .exp=0
   };
   clearScreen();
-  printf("                ********************\n");
-  printf("                * First Game V 1.4 *\n");
-  printf("                ********************       Last Change: 10/30/202    by Liplum\n");
+  printf("                **********************\n");
+  printf("                * First Game V 1.4.1 *\n");
+  printf("                **********************       Last Change: 4/14/2023    by Liplum\n");
   part_slime:
   {
     part = 1;
