@@ -71,8 +71,12 @@ void newTurnStart() {
   printf("------------------------------------------------------------");
   printf("\n[Turn %d]\n\n", turn);
   printf("Your Hp is %d. The %s Hp is %d.\n", player.curHp, curEnemy.name, curEnemy.curHp);
+}
+
+void getChoice(int* choice){
   printf("Attack=1, Parry=2, Withdraw=3\n");
   printf("Your choice:");
+  scanf("%d", choice);
 }
 
 void warning() {
@@ -124,7 +128,7 @@ int main(void) {
       int playerCaused;
       int slimeCaused;
       newTurnStart();
-      scanf("%d", &actionChoice);
+      getChoice(&actionChoice);
       printf("\n");
       switch (actionChoice) {
         case ATTACK: {
@@ -246,7 +250,7 @@ int main(void) {
       int thisTurnRatSkill;
       int thisTurnPlayerSkill1;
       newTurnStart();
-      scanf("%d", &actionChoice);
+      getChoice(&actionChoice);
       printf("\n");
       switch (actionChoice) {
         case ATTACK: {
@@ -446,7 +450,7 @@ int main(void) {
       int goblinCaused = 0;
       int playerCaused;
       newTurnStart();
-      scanf("%d", &actionChoice);
+      getChoice(&actionChoice);
       printf("\n");
       switch (actionChoice) {
         case ATTACK: {
