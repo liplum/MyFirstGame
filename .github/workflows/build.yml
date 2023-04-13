@@ -19,14 +19,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: '3.16.x'
+
+      - name: Use cmake
+        run: cmake --version
+
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROSS_COMPILE_ARCH: ${{ matrix.platform.arch }}
         run: |
-          make main
-          mv "main" "MyFirstGame"
+          cmake build .
+          ls -R
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.platform.os }}
           path: MyFirstGame
