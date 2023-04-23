@@ -61,8 +61,8 @@ void newTurnStart() {
 #if !defined(__CLION__)
   clearScreen();
 #endif
-  printf("------------------------------------------------------------");
-  printf("\n[Turn %d]\n\n", turn);
+  printf("------------------------------------------------------------\n");
+  printf("[Turn %d]\n\n", turn);
   printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.type->name, (int) curEnemy.curHp);
 }
 
@@ -84,9 +84,10 @@ int main(void) {
 #endif
   srand((unsigned) time(NULL));
   clearScreen();
-  printf("         **********************\n");
-  printf("         * First Game V 1.5.0 *\n");
-  printf("         **********************       Last Change: 4/23/2023    by Liplum\n");
+  printf("\t\t**********************\n");
+  printf("\t\t* First Game v1.5.0  *\n");
+  printf("\t\t**********************\n");
+  printf("\t\t\t\tLast Change: 4/23/2023    by Liplum\n");
   part_slime:
   {
     player = createPlayer(&playerLv1);
@@ -122,6 +123,7 @@ int main(void) {
             printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
             printf("Slime hit you and caused %d attack!\n", (int) slimeCaused);
             getchar();
+            getchar();
             goto loop_slime;
           } else if (curEnemy.curHp <= 0) { //Killed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -135,6 +137,7 @@ int main(void) {
             printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
             printf("Slime rushed swiftly and consumed you!\n");
             getchar();
+            getchar();
             goto die;
           }
         }
@@ -146,6 +149,7 @@ int main(void) {
             printf("You raised the shield and defended.\n");
             printf("Slime hit you and cause %d!\n", (int) slimeCaused);
             getchar();
+            getchar();
             player.armor = player.type->armor;
             goto loop_slime;
           } else {
@@ -153,6 +157,7 @@ int main(void) {
             printf("You raised the shield and tried to defend.\n");
             printf("But enemy countered your defense...\n");
             isGameOver = false;
+            getchar();
             goto die;
           }
         }
@@ -163,11 +168,13 @@ int main(void) {
           if (player.curHp > 0) {
             printf("You were distracted and caught by slimes. You lost %d attack.\n", (int) slimeCaused);
             getchar();
+            getchar();
             goto loop_slime;
           } else {
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             printf("Slime caught you and consumed your body. How poor you are!\n");
             isGameOver = false;
+            getchar();
             goto die;
           }
         }
@@ -251,6 +258,7 @@ int main(void) {
             }
             printf("The Giant rat bit you heavily and caused %d attack.\n", (int) ratCaused);
             getchar();
+            getchar();
             goto loop_rat;
           } else if (curEnemy.curHp <= 0) {  //Killed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -261,6 +269,7 @@ int main(void) {
             printf("Congratulations! You won the fight.\n");
             isGameOver = true;
             part += 1;
+            getchar();
             goto end;
           } else { //Failed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -301,8 +310,9 @@ int main(void) {
               printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
             printf("The giant Rat bit you heavily and caused %d attack.\n", (int) ratCaused);
-            getchar();
             player.armor = player.type->armor;
+            getchar();
+            getchar();
             goto loop_rat;
           } else {
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -475,6 +485,7 @@ int main(void) {
               printf("The goblin mage cast a fireball on you, dealing %d attack.\n", (int) goblinCaused);
             }
             getchar();
+            getchar();
             goto loop_goblin;
           } else if (curEnemy.curHp <= 0) { // Killed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -482,6 +493,7 @@ int main(void) {
             printf("Congratulations! You won the fight.\n");
             isGameOver = true;
             part += 1;
+            getchar();
             goto win;
           } else { // Failed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -579,8 +591,9 @@ int main(void) {
                        (int) goblinCaused);
               }
             }
-            getchar();
             player.armor = player.type->armor;
+            getchar();
+            getchar();
             goto loop_goblin;
           } else { // Failed
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -660,6 +673,7 @@ int main(void) {
                      (int) goblinCaused);
             }
             getchar();
+            getchar();
             goto loop_goblin;
           }
           if (player.curHp <= 0) {
@@ -709,9 +723,9 @@ int main(void) {
       // do nothing
     }
     clearScreen();
-    printf("          ***********\n");
-    printf("          *Game Over*\n");
-    printf("          ***********\n");
+    printf("\t\t***********\n");
+    printf("\t\t*Game Over*\n");
+    printf("\t\t***********\n");
     return 0;
   }
   win:
