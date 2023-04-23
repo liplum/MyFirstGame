@@ -32,8 +32,7 @@ jobs:
           CROSS_COMPILE_ARCH: ${{ matrix.platform.arch }}
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
-          ls -R
+          cmake --build build --config Release
 
       - uses: actions/upload-artifact@v3
         with:

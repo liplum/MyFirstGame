@@ -6,7 +6,7 @@ on:
     types:
       - completed
 jobs:
-  build:
+  draft:
     runs-on: ubuntu-latest
     env:
       GH_REPO: ${{ github.repository }}
@@ -16,10 +16,19 @@ jobs:
         with:
           branch: master
           workflow: build.yaml
-          path: dist
+          path: download
           workflow_conclusion: success
       - run:
-          tree -f
+          tree
+          mkdir dist
+          # Extract MyFirstGame from Linux (x64)
+          cp download/"Linux (x64)"/MyFirstGame dist/
+          # Extract MyFirstGame from Mac (arm64)
+          cp download/"Mac (arm64)"/MyFirstGame dist/
+          # Extract MyFirstGame from Mac (x64)
+          cp download/"Mac (x64)"/MyFirstGame dist/
+          # Extract MyFirstGame.exe from Windows (x64)/Release
+          cp download/"Windows (x64)"/Release/MyFirstGame.exe dist/
 
       - name: Create Release Draft
         env:
