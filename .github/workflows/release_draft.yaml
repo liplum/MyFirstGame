@@ -19,7 +19,6 @@ jobs:
           path: download
           workflow_conclusion: success
       - run: |
-          tree
           mkdir dist
           # Extract MyFirstGame from Linux (x64)
           cp download/"Linux (x64)"/MyFirstGame dist/MyFirstGame-Linux-x64

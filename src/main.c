@@ -7,6 +7,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include "entity.h"
+#include "levels.h"
 
 #define ATTACK  1
 #define PARRY  2
@@ -25,9 +26,9 @@ bool isGameOver = false;
 int turn = 0, part = 1;
 
 Player player;
+Enemy curEnemy;
 
 float randomness = 0.1f;
-Enemy curEnemy;
 
 /// Return a random number between [0f,1f]
 float randf() {
@@ -36,33 +37,40 @@ float randf() {
 
 /// Return a random number between [min,max]
 float randfIn(float min, float max) {
-  return randf() * max + min;
+  float range = max - min;
+  return randf() * range + min;
 }
 
 float waving(float value) {
   return value * randfIn(1.0f - randomness, 1.0f + randomness);
 }
 
-float calcDamage(int aLv, float aAttack, float bArmor) {
+float calcDamage(int aLv, float aAttack, float aPower, float bArmor) {
   float randomFactor = randfIn(0.85f, 1.0f);
-  return ((((((2 * (float) aLv) / 5 + 2) * aAttack / bArmor) / 50) + 2) * randomFactor) / 100;
+  if (bArmor == 0) bArmor = 1;
+  float damageFactor = aAttack / bArmor;
+  float attackerLvFactor = 2 * (float) aLv / 5 + 2;
+  float damage = attackerLvFactor * aPower * damageFactor / 50;
+  return damage * randomFactor;
 }
 
-float calcDamage(int aLv, float aAttack, float bArmor);
+float calcPlayerDamage(float power) {
+  return calcDamage(player.info->level, player.attack, power, curEnemy.armor);
+}
 
-float calcPlayerDamage() {
-  return 0.0f;
+float calcEnemyDamage(float power) {
+  return calcDamage(curEnemy.info->level, curEnemy.attack, power, player.armor);
 }
 
 void playerAttributesUpgrade(Upgrade upgrade) {
   printf("\nYour max HP+%d, attack+%d, armor+%d.\n\n", (int) upgrade.hp, (int) upgrade.attack, (int) upgrade.armor);
-  player.maxHp += upgrade.hp;
+  player.info->maxHp += upgrade.hp;
   player.attack += upgrade.attack;
   player.armor += upgrade.armor;
 }
 
 void playerRestoreAttributes() {
-  player.curHp = player.maxHp;
+  player.curHp = player.info->maxHp;
 }
 
 void newTurnStart() {
@@ -70,7 +78,7 @@ void newTurnStart() {
   clearScreen();
   printf("------------------------------------------------------------");
   printf("\n[Turn %d]\n\n", turn);
-  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.name, (int) curEnemy.curHp);
+  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.info->name, (int) curEnemy.curHp);
 }
 
 int getChoice() {
@@ -85,44 +93,35 @@ void warning() {
   printf("\a");
 }
 
+
 int main(void) {
+#ifdef _WIN32
+  setvbuf(stdout, NULL, _IONBF, 0);
+#endif
   srand((unsigned) time(NULL));
-  player = (Player) {
-    .maxHp = waving(150),
-    .attack =waving(10),
-    .armor=4,
-    .level=1,
-    .exp=0
-  };
   clearScreen();
   printf("         **********************\n");
-  printf("         * First Game V 1.4.1 *\n");
+  printf("         * First Game V 1.5.0 *\n");
   printf("         **********************       Last Change: 4/23/2023    by Liplum\n");
   part_slime:
   {
+    player = createPlayer(&playerInfo);
+    curEnemy = createEnemy(&enemySlime);
     part = 1;
     playerRestoreAttributes();
     turn = 0;
     isGameOver = false;
-    printf("Press Enter to start.\n");
+    printf("Press Enter to start.");
     getchar();
-    curEnemy = (Enemy) {
-      .name = "Slime",
-      .curHp = waving(60),
-      .attack = waving(12),
-      .armor = 0,
-      .exp = 200,
-      .level = 1,
-    };
-    printf("You were found in a forest.\n");
+    printf("You were found in a forest.");
     getchar();
     warning();
-    printf("A slime is coming here... \n");
+    printf("A slime is coming here...");
     getchar();
-    printf("Start fighting!\n");
+    printf("Start fighting!");
     getchar();
 
-    printf("Your Hp is %d. Slime's is %d.\n", (int) player.curHp, (int) curEnemy.curHp);
+    printf("Your Hp is %d. Slime's is %d.", (int) player.curHp, (int) curEnemy.curHp);
     getchar();
 
     loop_slime:
@@ -132,61 +131,63 @@ int main(void) {
       printf("\n");
       switch (choice) {
         case ATTACK: {
-          float playerCaused = waving(player.attack);
+          float playerCaused = calcPlayerDamage(100);
           curEnemy.curHp -= playerCaused;
-          float slimeCaused = waving(curEnemy.attack) - player.armor;
+          float slimeCaused = calcEnemyDamage(100);
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
-            printf("\nYou slashed the enemy and cause %d attack!\n\n", (int) playerCaused);
-            printf("\nSlime hit you and caused %d attack!", (int) slimeCaused);
+            printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
+            printf("Slime hit you and caused %d attack!", (int) slimeCaused);
             getchar();
             getchar();
             goto loop_slime;
           } else if (curEnemy.curHp <= 0) { //Killed
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\nA critical strike is performed!\n\n");
-            printf("Congratulations! You won the fight.\n\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("A critical strike is performed!\n");
+            printf("Congratulations! You won the fight.\n");
             isGameOver = true;
             part += 1;
             goto end;
           } else { //Failed
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\nYou slashed the enemy and cause %d attack!\n\n", (int) playerCaused);
-            printf("\nSlime rushed swiftly and consumed you!\n\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
+            printf("Slime rushed swiftly and consumed you!\n");
             getchar();
             getchar();
             goto die;
           }
         }
         case PARRY: {
-          float slimeCaused = waving(curEnemy.attack) - player.armor * 2;
+          player.armor *= 2;
+          float slimeCaused = calcEnemyDamage(100);
+          player.armor = playerInfo.armor;
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
-            printf("\nYou raised the shield and defended.\n");
-            printf("\nSlime hit you and cause %d!\n\n", (int) slimeCaused);
+            printf("You raised the shield and defended.\n");
+            printf("Slime hit you and cause %d!\n", (int) slimeCaused);
             getchar();
             getchar();
             goto loop_slime;
           } else {
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\nYou raised the shield and tried to defend.\n");
-            printf("\nBut enemy countered your defense...\n\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("You raised the shield and tried to defend.\n");
+            printf("But enemy countered your defense...\n");
             isGameOver = false;
             goto die;
           }
         }
         case Withdraw: {
-          printf("\nSlime stuck your legs.\n");
-          float slimeCaused = waving(curEnemy.attack);
+          printf("Slime stuck your legs.\n");
+          float slimeCaused = calcEnemyDamage(150);
           player.curHp -= curEnemy.attack;
           if (player.curHp > 0) {
-            printf("\nYou were distracted and caught by slimes. You lost %d attack.\n\n", (int) slimeCaused);
+            printf("You were distracted and caught by slimes. You lost %d attack.\n", (int) slimeCaused);
             getchar();
             getchar();
             goto loop_slime;
           } else {
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\nSlime caught you and consumed your body. How poor you are!\n\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("Slime caught you and consumed your body. How poor you are!\n");
             isGameOver = false;
             goto die;
           }
@@ -201,22 +202,16 @@ int main(void) {
 
   part_rat:
   {
+    player = createPlayer(&playerInfo);
+    curEnemy = createEnemy(&enemyRat);
     part = 2;
     turn = 0;
     isGameOver = false;
-    curEnemy = (Enemy) {
-      .name = "Rat",
-      .curHp = waving(85),
-      .attack = waving(17),
-      .armor = 1,
-      .exp = 300,
-      .level = 2,
-    };
     clearScreen();
-    if (player.exp >= 100 && player.level == 1) {
-      player.level += 1;
-      player.exp -= 100;
-      printf("\nUpgraded! Your level is %d now!\n", player.level);
+    if (player.info->exp >= 100 && player.info->level == 1) {
+      player.info->level += 1;
+      player.info->exp -= 100;
+      printf("\nUpgraded! Your level is %d now!\n", player.info->level);
       getchar();
       playerAttributesUpgrade((Upgrade) {
         .hp=80,
@@ -256,7 +251,7 @@ int main(void) {
           int thisTurnRatSkill;
           int thisTurnPlayerSkill1;
           // Check the skill "Shield Bash"
-          if (playerSkill1Counter >= 2 && player.level == 2) {// if trigger
+          if (playerSkill1Counter >= 2 && player.info->level == 2) {// if trigger
             playerCaused = waving(player.attack) * 3;
             curEnemy.curHp -= playerCaused;
             playerSkill1Counter = 0;
@@ -335,7 +330,7 @@ int main(void) {
             thisTurnRatSkill = false;
           }
           if (player.curHp > 0) {
-            if (player.level == 2) {
+            if (player.info->level == 2) {
               playerSkill1Counter += 1;
             }
             printf("\nYou raised the shield and defended.\n");
@@ -388,23 +383,17 @@ int main(void) {
 
   part_goblin:
   {
-    curEnemy = (Enemy) {
-      .name = "Goblin Mage",
-      .curHp = waving(180),
-      .attack = waving(20),
-      .armor = 8,
-      .exp = 600,
-      .level = 3,
-    };
+    player = createPlayer(&playerInfo);
+    curEnemy = createEnemy(&enemyGoblinMage);
     part = 3;
     turn = 0;
     isGameOver = false;
     int gSkillCounter = 0;
     clearScreen();
-    if (player.exp >= 300 && player.level == 2) {
-      player.level += 1;
-      player.exp -= 300;
-      printf("\nUpgraded! Your level is %d now!\n", player.level);
+    if (player.info->exp >= 300 && player.info->level == 2) {
+      player.info->level += 1;
+      player.info->exp -= 300;
+      printf("\nUpgraded! Your level is %d now!\n", player.info->level);
       getchar();
       playerAttributesUpgrade((Upgrade) {
         .hp = 150,
@@ -457,7 +446,7 @@ int main(void) {
           float goblinCaused;
           float playerCaused;
           // Check the skill "Shield Bash"
-          if (playerSkill1Counter >= 2 && player.level >= 2) {
+          if (playerSkill1Counter >= 2 && player.info->level >= 2) {
             playerCaused = waving(player.attack) * 3;
             thisTurnPlayerSkill1 = true;
           } else {
@@ -503,7 +492,7 @@ int main(void) {
           // Reset skill 1
           playerSkill1Counter = 0;
           if (curEnemy.curHp > 0 && player.curHp > 0) { // Not yet killed
-            if (player.level >= 3) {
+            if (player.info->level >= 3) {
               playerSkill2Counter += 1;
             } // count the skill 2
             if (thisTurnPlayerSkill1 == 1) {
@@ -579,7 +568,7 @@ int main(void) {
                 thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 // Check player skill "Offense To Defense"
-                if (playerSkill2Counter >= 3 && player.level >= 3) {
+                if (playerSkill2Counter >= 3 && player.info->level >= 3) {
                   goblinCaused = waving(curEnemy.attack) * 0.1f;
                   thisTurnPlayerSkill2 = true;
                 } else {
@@ -599,7 +588,7 @@ int main(void) {
             case 2: { // Goblin has charged and prepare to release.
               // Check player skill "Offense To Defense"
               goblinCaused = waving((curEnemy.attack * goblinSkillDmgFactor)) - ((float) player.armor / 2.0f);
-              if (playerSkill2Counter >= 3 && player.level >= 3) {
+              if (playerSkill2Counter >= 3 && player.info->level >= 3) {
                 goblinCaused *= 0.1f; // -90% attack
                 thisTurnPlayerSkill2 = true;
               } else {
@@ -615,7 +604,7 @@ int main(void) {
           }
           playerSkill2Counter = 0;
           if (player.curHp > 0) { //Not failed
-            if (player.level >= 2) {
+            if (player.info->level >= 2) {
               playerSkill1Counter += 1;
             }
             if (thisTurnPlayerSkill2) {
@@ -765,15 +754,15 @@ int main(void) {
     getchar();
 
     if (isGameOver == 1) {
-      int expGain = curEnemy.exp - turn * 3;
+      int expGain = curEnemy.info->expRewards - turn * 3;
 
       if (expGain <= 0)
         expGain = 0;
 
-      player.exp += expGain;
+      player.info->exp += expGain;
 
-      printf("You spent %d turns and gain %d exp!\n\n", turn, expGain);
-      printf("Now you have %d exp\n", player.exp);
+      printf("You spent %d turns and gain %d expRewards!\n\n", turn, expGain);
+      printf("Now you have %d expRewards\n", player.info->exp);
       printf("Press Enter to continue...");
       getchar();
       switch (part) { // Goto part

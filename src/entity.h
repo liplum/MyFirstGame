@@ -6,13 +6,21 @@
 #define ENTITY_H
 
 typedef struct {
-  float curHp;
   float maxHp;
   float attack;
   float armor;
   int exp;
   int level;
+} PlayerInfo;
+
+typedef struct {
+  PlayerInfo *info;
+  float curHp;
+  float attack;
+  float armor;
 } Player;
+
+Player createPlayer(PlayerInfo *info);
 
 typedef struct {
   float hp;
@@ -22,11 +30,20 @@ typedef struct {
 
 typedef struct {
   char *name;
+  float attack;
+  float maxHp;
+  float armor;
+  int level;
+  int expRewards;
+} EnemyInfo;
+
+typedef struct {
+  EnemyInfo *info;
   float curHp;
   float attack;
   float armor;
-  int level;
-  int exp;
 } Enemy;
+
+Enemy createEnemy(EnemyInfo *info);
 
 #endif //ENTITY_H
