@@ -14,7 +14,7 @@
 #define LevelCount 3
 
 int main(void) {
-#ifdef __CLION__
+#ifdef _WIN32
   setvbuf(stdout, NULL, _IONBF, 0);
 #endif
   srand((unsigned) time(NULL));
@@ -36,13 +36,15 @@ int main(void) {
       case BattleWin: {
         printf("Press Enter to continue...");
         getchar();
+        getchar();
         continue;
       }
       case BattleLoss: {
-        clearScreen();
-        printf("\t\t***********\n");
-        printf("\t\t*Game Over*\n");
-        printf("\t\t***********\n");
+        getchar();
+        printf("*----*------*------*------*------*-------*\n");
+        printf("|             Game Over                  |\n");
+        printf("|       Don't be sad, just try again.    |\n");
+        printf("*-----*------*------*------*------*------*\n");
         return 0;
       }
     }

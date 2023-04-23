@@ -32,11 +32,9 @@ BattleResult goblinMageBattle() {
   int turn = 0;
   int goblinSkillCounter = 0;
   clearScreen();
-  printf("Upgraded! Your level is %d now!\n", player->type->level);
+  printf("Upgraded! You are level %d now!\n", player->type->level);
   printf("You learnt a new skill \"Offense To Defense\"!\n");
   printf("Description: Attack three times in a row will charge your next Parry to reduce 90%% damage.\n");
-  getchar();
-  clearScreen();
   getchar();
   printf("You continue to explore forward.");
   getchar();

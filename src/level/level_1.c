@@ -49,7 +49,6 @@ BattleResult slimeBattle() {
     printf("\n");
     switch (choice) {
       case Attack: {
-        turn++;
         float playerCaused = calcDamageFor(player, enemy, player->type->attackPower);
         enemy->curHp -= playerCaused;
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower);

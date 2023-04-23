@@ -33,12 +33,10 @@ BattleResult giantRatBattle() {
   Enemy *enemy = createEnemy(&enemyRat);
   int turn = 0;
   clearScreen();
-  printf("Upgraded! Your level is %d now!\n", player->type->level);
+  printf("Upgraded! You are level %d now!\n", player->type->level);
   printf("You learnt a new skill \"Shield Bash\"!\n");
   printf(
     "Description: Parry twice in a row will charge your next Attack with 200%% damage and penetrate 50%% armor.\n");
-  clearScreen();
-  getchar();
   getchar();
   alert();
   printf("A giant rat followed closely.");
