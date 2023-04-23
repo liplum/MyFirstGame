@@ -13,7 +13,7 @@ typedef struct {
 } PlayerType;
 
 typedef struct {
-  PlayerType* type;
+  PlayerType *type;
   int exp;
   int level;
 } PlayerInfo;
@@ -34,6 +34,7 @@ typedef struct {
   float armor;
   int level;
   int expRewards;
+  float attackPower;
 } EnemyType;
 
 typedef struct {

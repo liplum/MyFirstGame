@@ -21,6 +21,7 @@ EnemyType enemySlime = (EnemyType) {
   .armor = 2.0f,
   .expRewards = 200,
   .level = 1,
+  .attackPower = 100,
 };
 
 
@@ -31,6 +32,7 @@ EnemyType enemyRat = (EnemyType) {
   .armor = 1.0f,
   .expRewards = 300,
   .level = 2,
+  .attackPower = 150,
 };
 
 EnemyType enemyGoblinMage = (EnemyType) {
@@ -40,5 +42,7 @@ EnemyType enemyGoblinMage = (EnemyType) {
   .armor = 8,
   .expRewards = 600,
   .level = 3,
+  .attackPower = 120,
 };
+
 #endif //LEVELS_H

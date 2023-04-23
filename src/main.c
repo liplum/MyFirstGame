@@ -62,10 +62,6 @@ float calcEnemyDamage(float power) {
   return calcDamage(curEnemy.info->level, curEnemy.attack, power, player.armor);
 }
 
-void playerRestoreAttributes() {
-  player.curHp = player.info->type->maxHp;
-}
-
 void newTurnStart() {
   turn++;
 #if !defined(__CLION__)
@@ -88,6 +84,30 @@ void warning() {
   printf("\a");
 }
 
+void checkUpgrade() {
+  if (player.info->level == 1) {
+    if (player.info->exp >= 100) {
+      player.info->level += 1;
+      player.info->exp -= 100;
+      printf("Upgraded! Your level is %d now!\n", player.info->level);
+      getchar();
+      printf("You learnt a new skill \"Shield Bash\"!\n");
+      printf(
+        "Description: Parry twice in a row will charge your next attack with 300%% attack and pass through armor.\n");
+    }
+  } else if (player.info->level == 2) {
+    if (player.info->exp >= 300) {
+      player.info->level += 1;
+      player.info->exp -= 300;
+      printf("Upgraded! Your level is %d now!\n", player.info->level);
+      getchar();
+      printf("You learnt a new skill \"Offense To Defense\"!\n");
+      printf(
+        "Description: Attack three times in a row will charge your next parry to reduce 90%% attack.\n");
+    }
+  }
+}
+
 
 int main(void) {
 #ifndef __CLION__
@@ -108,7 +128,6 @@ int main(void) {
     player = createPlayer(&playerInfo);
     curEnemy = createEnemy(&enemySlime);
     part = 1;
-    playerRestoreAttributes();
     turn = 0;
     isGameOver = false;
     printf("Press Enter to start.");
@@ -131,9 +150,9 @@ int main(void) {
       printf("\n");
       switch (choice) {
         case ATTACK: {
-          float playerCaused = calcPlayerDamage(100);
+          float playerCaused = calcPlayerDamage(playerType.attackPower);
           curEnemy.curHp -= playerCaused;
-          float slimeCaused = calcEnemyDamage(100);
+          float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower);
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
             printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
@@ -157,7 +176,7 @@ int main(void) {
         }
         case PARRY: {
           player.armor *= 2;
-          float slimeCaused = calcEnemyDamage(100);
+          float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower);
           player.armor = playerType.armor;
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
@@ -175,7 +194,7 @@ int main(void) {
         }
         case Withdraw: {
           printf("Slime stuck your legs.\n");
-          float slimeCaused = calcEnemyDamage(150);
+          float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower * 1.5f);
           player.curHp -= curEnemy.attack;
           if (player.curHp > 0) {
             printf("You were distracted and caught by slimes. You lost %d attack.\n", (int) slimeCaused);
@@ -204,17 +223,8 @@ int main(void) {
     turn = 0;
     isGameOver = false;
     clearScreen();
-    if (player.info->exp >= 100 && player.info->level == 1) {
-      player.info->level += 1;
-      player.info->exp -= 100;
-      printf("\nUpgraded! Your level is %d now!\n", player.info->level);
-      getchar();
-      printf("\nYou learnt a new skill \"Shield Bash\"!\n");
-      printf(
-        "Description: Parry twice in a row will charge your next attack with 300%% attack and pass through armor.\n");
-    }
+    checkUpgrade();
     clearScreen();
-    playerRestoreAttributes();
     getchar();
     warning();
     printf("A giant rat followed closely.\n");
@@ -242,63 +252,58 @@ int main(void) {
           int thisTurnPlayerSkill1;
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.info->level == 2) {// if trigger
-            playerCaused = waving(player.attack) * 3;
-            curEnemy.curHp -= playerCaused;
+            playerCaused = calcPlayerDamage(playerType.attackPower * 3);
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 1;
-          } else {
-            playerCaused = waving(player.attack) - curEnemy.armor;
-            curEnemy.curHp -= playerCaused;
+          } else { // if not trigger
+            playerCaused = calcPlayerDamage(playerType.attackPower);
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 0;
           }
+          curEnemy.curHp -= playerCaused;
           // Check rat's skill
           if (ratSkillCounter >= 2) { // if trigger
-            ratCaused = waving(curEnemy.attack) * 2;
-            ratCaused -= player.armor;
-            player.curHp -= ratCaused;
+            ratCaused = calcEnemyDamage(curEnemy.info->attackPower * 2);
             ratSkillCounter = 0;
             thisTurnRatSkill = 1;
-          } else {
-            ratCaused = waving(curEnemy.attack) - player.armor;
-            player.curHp -= ratCaused;
+          } else { // if not trigger
+            ratCaused = calcEnemyDamage(curEnemy.info->attackPower);
             ratSkillCounter += 1;
             thisTurnRatSkill = 0;
           }
+          player.curHp -= ratCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
             if (thisTurnPlayerSkill1 == 1) {
               printf("Your skill \"Shield Bash\" is triggered.\n");
             }
-            printf("\nYou hit the rat and cause %d attack.\n\n", (int) playerCaused);
+            printf("You hit the rat and cause %d attack.\n\n", (int) playerCaused);
             if (thisTurnRatSkill == 1) {
-              printf("The Giant rat has attacked twice in a row, and this time it is full of energy!\n\n");
+              printf("The Giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
-            printf("The Giant rat bit you heavily and caused %d attack.\n\n", (int) ratCaused);
-            getchar();
+            printf("The Giant rat bit you heavily and caused %d attack.\n", (int) ratCaused);
             getchar();
             goto loop_rat;
           } else if (curEnemy.curHp <= 0) {  //Killed
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             if (thisTurnPlayerSkill1 == 1) {
               printf("Your skill \"Shield Bash\" is triggered.\n");
             }
-            printf("\nYou made a critical strike on the rat!\n\n");
-            printf("Congratulations! You won the fight.\n\n");
+            printf("You made a critical strike on the rat!\n");
+            printf("Congratulations! You won the fight.\n");
             isGameOver = true;
             part += 1;
             goto end;
           } else { //Failed
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             if (thisTurnPlayerSkill1 == 1) {
               printf("Your skill \"Shield Bash\" is triggered.\n");
             }
-            printf("\nYou hit the rat and cause %d attack.\n\n", (int) playerCaused);
+            printf("You hit the rat and cause %d attack.\n", (int) playerCaused);
             if (thisTurnRatSkill == 1) {
-              printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n\n");
+              printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
-            printf("\nThe giant rat suddenly hit you with a fatal blow!\n\n");
+            printf("The giant rat suddenly hit you with a fatal blow!\n");
             isGameOver = false;
-            getchar();
             getchar();
             goto die;
           }
@@ -307,37 +312,36 @@ int main(void) {
           float ratCaused;
           bool thisTurnRatSkill;
           // Check rat's skill
-          if (ratSkillCounter >= 2) {
-            ratCaused = waving(curEnemy.attack) * 2;
+          if (ratSkillCounter >= 2) { // if trigger
+            ratCaused = calcEnemyDamage(curEnemy.info->attackPower * 2);
             ratCaused = ratCaused - player.armor * 2;
-            player.curHp -= ratCaused;
             ratSkillCounter = 0;
             thisTurnRatSkill = true;
-          } else {
-            ratCaused = waving(curEnemy.attack) - player.armor * 2;
-            player.curHp -= ratCaused;
+          } else { // if not trigger
+            ratCaused = calcEnemyDamage(curEnemy.info->attackPower);
             ratSkillCounter += 1;
             thisTurnRatSkill = false;
           }
+          player.curHp -= ratCaused;
           if (player.curHp > 0) {
             if (player.info->level == 2) {
               playerSkill1Counter += 1;
             }
-            printf("\nYou raised the shield and defended.\n");
+            printf("You raised the shield and defended.\n");
             if (thisTurnRatSkill == 1) {
-              printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n\n");
+              printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
-            printf("The giant Rat bit you heavily and caused %d attack.\n\n", (int) ratCaused);
+            printf("The giant Rat bit you heavily and caused %d attack.\n", (int) ratCaused);
             getchar();
             getchar();
             goto loop_rat;
           } else {
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\nYou raised the shield and tried to defend.\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("You raised the shield and tried to defend.\n");
             if (thisTurnRatSkill == 1) {
-              printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n\n");
+              printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
-            printf("\nBut giant rat countered your defense...\n\n");
+            printf("But giant rat countered your defense...\n");
             isGameOver = false;
             getchar();
             getchar();
@@ -345,18 +349,18 @@ int main(void) {
           }
         }
         case Withdraw: {
-          printf("\nThe giant rat bit your shoulder. You can't not move!\n");
-          float ratCaused = waving(curEnemy.attack) * 1.5f;
+          printf("The giant rat bit your shoulder. You can't not move!\n");
+          float ratCaused = calcEnemyDamage(curEnemy.info->attackPower * 1.5f);
           player.curHp -= ratCaused;
           if (player.curHp > 0) {
-            printf("\nYou were controlled by a giant rat, and it bit at your neck causing %d attack!\n\n",
+            printf("You were controlled by a giant rat, and it bit at your neck causing %d attack!\n\n",
                    (int) ratCaused);
             getchar();
             getchar();
             goto loop_rat;
           } else {
-            printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("\nYou were held by the giant rat, and it bit off your neck!\n\n");
+            printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+            printf("You were held by the giant rat, and it bit off your neck!\n\n");
             getchar();
             getchar();
             isGameOver = false;
@@ -380,18 +384,8 @@ int main(void) {
     isGameOver = false;
     int gSkillCounter = 0;
     clearScreen();
-    if (player.info->exp >= 300 && player.info->level == 2) {
-      player.info->level += 1;
-      player.info->exp -= 300;
-      printf("\nUpgraded! Your level is %d now!\n", player.info->level);
-      getchar();
-      printf("\nYou learnt a new skill \"Offense To Defense\"!\n");
-      printf(
-        "Description: Attack three times in a row will charge your next parry to reduce 90%% attack.\n");
-    }
+    checkUpgrade();
     clearScreen();
-    playerRestoreAttributes();
-
     getchar();
     printf("\nYou continue to explore forward.\n");
     getchar();
@@ -745,8 +739,8 @@ int main(void) {
 
       player.info->exp += expGain;
 
-      printf("You spent %d turns and gain %d expRewards!\n\n", turn, expGain);
-      printf("Now you have %d expRewards\n", player.info->exp);
+      printf("You spent %d turns and gain %d exp!\n\n", turn, expGain);
+      printf("Now you have %d exp\n", player.info->exp);
       printf("Press Enter to continue...");
       getchar();
       switch (part) { // Goto part
@@ -758,7 +752,6 @@ int main(void) {
     } else {
       // do nothing
     }
-
     clearScreen();
     printf("             ***********\n");
     printf("             *Game Over*\n");
