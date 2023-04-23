@@ -363,7 +363,7 @@ int main(void) {
     part = 3;
     turn = 0;
     isGameOver = false;
-    int gSkillCounter = 0;
+    int goblinSkillCounter = 0;
     clearScreen();
     printf("Upgraded! Your level is %d now!\n", player.type->level);
     printf("You learnt a new skill \"Offense To Defense\"!\n");
@@ -384,14 +384,14 @@ int main(void) {
     // Skill 1:
     // Each round has a 20% chance to charge for two turns (it won't trigger itself during the charge),
     // and release a spell barrier that can resist 50% of oncoming attack,
-    // deal 220% attack and break 50% of armor on the next attack.
+    // deal 220% damage and break 50% of armor on the next attack.
 
     // Skill 2: TODO: Finish this skill
     // After being attacked for three times in a row,
     // the next time goblin are attacked,
-    // 50% of the attack caused is reflected to the attacker,
-    // and goblin will only take 50% of the attack.
-    int playerSkill1Counter = 0;
+    // 50% of the damage caused is reflected to the attacker,
+    // and goblin will only take 50% of the damage.
+    int shieldBashCounter = 0;
     int playerSkill2Counter = 0;
     const int goblinSkillTriggerChance = 4;
     const float goblinSkillDmgFactor = 3.5f;
@@ -403,66 +403,61 @@ int main(void) {
       printf("\n");
       switch (choice) {
         case ATTACK: {
-          bool thisTurnPlayerSkill1;
-          bool thisTurnGoblinSkill;
+          bool isShieldBashTriggered;
           float goblinCaused;
           float playerCaused;
           // Check the skill "Shield Bash"
-          if (playerSkill1Counter >= 2) { // if trigger
+          if (shieldBashCounter >= 2) { // if trigger
             curEnemy.armor *= 1.0f - shieldBashPenetrate;
             playerCaused = calcPlayerDamage(player.type->attackPower * shieldBashMul);
             curEnemy.armor = curEnemy.type->armor;
-            thisTurnPlayerSkill1 = true;
+            isShieldBashTriggered = true;
           } else { // if not trigger
             playerCaused = calcPlayerDamage(player.type->attackPower);
-            thisTurnPlayerSkill1 = false;
+            isShieldBashTriggered = false;
           }
 
           // Check goblin charging
-          switch (gSkillCounter) {
+          switch (goblinSkillCounter) {
             case 0: { // Goblin is not charging. roll to start charging
               GRand = rand() % goblinSkillTriggerChance;
               if (GRand == 0) { // Goblin starts charging
-                gSkillCounter = 1;
+                goblinSkillCounter = 1;
                 playerCaused *= 0.5f;
                 curEnemy.curHp -= playerCaused;
-                thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 curEnemy.curHp -= playerCaused;
                 goblinCaused = calcEnemyDamage(curEnemy.type->attackPower);
                 player.curHp -= goblinCaused;
-                thisTurnGoblinSkill = false;
               }
             }
               break;
             case 1: { // Goblin is charging, already spent 1 turns
               playerCaused *= 0.5f;
               curEnemy.curHp -= playerCaused;
-              gSkillCounter += 1;
-              thisTurnGoblinSkill = false;
+              goblinSkillCounter += 1;
             }
               break;
             case 2: { // Goblin has charged up
               curEnemy.curHp -= playerCaused;
               goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * goblinSkillDmgFactor);
               player.curHp -= goblinCaused;
-              gSkillCounter = 0;
-              thisTurnGoblinSkill = true;
+              goblinSkillCounter = 0;
             }
               break;
             default:
               break;
           }
           // Reset skill 1
-          playerSkill1Counter = 0;
+          shieldBashCounter = 0;
           if (curEnemy.curHp > 0 && player.curHp > 0) { // Not yet killed
             if (player.type->level >= 3) {
               playerSkill2Counter += 1;
             } // count the skill 2
-            if (thisTurnPlayerSkill1 == 1) {
+            if (isShieldBashTriggered) {
               printf("Your skill \"Shield Bash\" is triggered.\n");
             }
-            switch (gSkillCounter) {
+            switch (goblinSkillCounter) {
               case 1:
                 printf("The goblin mage is charging, and a magic barrier appears in front of them.\n");
                 printf("You attacked the goblin mage, but the effect is weak, only caused %d damage.\n",
@@ -480,12 +475,12 @@ int main(void) {
               default:
                 break;
             }
-            if (thisTurnGoblinSkill) {
+            if (goblinSkillCounter == 1) {
               printf(
-                "The goblin mage has charged up and released pyroblast on you, inflicting a huge attack up to %d!\n",
+                "The goblin mage has charged up and released pyroblast on you, inflicting a huge damage up to %d!\n",
                 (int) goblinCaused);
             }
-            if (gSkillCounter == 0) {
+            if (goblinSkillCounter == 0) {
               printf("The goblin mage cast a fireball on you, dealing %d damage.\n", (int) goblinCaused);
             }
             getchar();
@@ -503,7 +498,7 @@ int main(void) {
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             printf("You hit the goblin and cause %d damage.\n",
                    (int) playerCaused);
-            if (thisTurnGoblinSkill) {
+            if (goblinSkillCounter == 1) {
               printf(
                 "After the goblin mage has charged up, they released the pyroblast, dealing %d damage.\n",
                 (int) goblinCaused);
@@ -511,7 +506,7 @@ int main(void) {
             } else {
               printf(
                 "The goblin released the dragon flame.\n");
-              printf("You can't resist such a terrifying attack at all and evaporated in the flame...\n");
+              printf("You can't resist such terrifying power at all and evaporated in the flame...\n");
             }
             isGameOver = false;
             getchar();
@@ -524,11 +519,11 @@ int main(void) {
           player.armor *= 2;
           float goblinCaused;
           // Check goblin charging
-          switch (gSkillCounter) {
+          switch (goblinSkillCounter) {
             case 0: { // Goblin is not charging. roll to start charging
               GRand = rand() % goblinSkillTriggerChance;
               if (GRand == 0) {// Goblin starts charging
-                gSkillCounter = 1;
+                goblinSkillCounter = 1;
                 thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 // Check player skill "Offense To Defense"
@@ -545,7 +540,7 @@ int main(void) {
             }
               break;
             case 1: { // Goblin is charging, already spent 1 turn
-              gSkillCounter += 1;
+              goblinSkillCounter += 1;
               thisTurnGoblinSkill = false;
             }
               break;
@@ -559,7 +554,7 @@ int main(void) {
                 thisTurnPlayerSkill2 = false;
               }
               player.curHp -= goblinCaused;
-              gSkillCounter = 0;
+              goblinSkillCounter = 0;
               thisTurnGoblinSkill = true;
             }
               break;
@@ -568,12 +563,12 @@ int main(void) {
           }
           playerSkill2Counter = 0;
           if (player.curHp > 0) { //Not failed
-            playerSkill1Counter += 1;
+            shieldBashCounter += 1;
             if (thisTurnPlayerSkill2) {
               printf("Your skill \"Offense To Defense\" is triggered.\n");
             }
             printf("You raised the shield and defended.\n");
-            switch (gSkillCounter) {
+            switch (goblinSkillCounter) {
               case 1:
                 printf("The goblin mage is charging, and a magic barrier appears in front of them.\n");
                 break;
@@ -626,11 +621,11 @@ int main(void) {
             "The goblin mage chanted a series of incantations, released a magic circle under your feet, and you were imprisoned!\n");
 
           // Check goblin charging
-          switch (gSkillCounter) {
+          switch (goblinSkillCounter) {
             case 0: {  // Goblin is not charging. roll to start charging
               GRand = rand() % goblinSkillTriggerChance;
               if (GRand == 0) { // Goblin starts charging
-                gSkillCounter = 1;
+                goblinSkillCounter = 1;
                 thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * 1.5f);
@@ -640,14 +635,14 @@ int main(void) {
               break;
             }
             case 1: { // Goblin is charging, already spent 1 turn
-              gSkillCounter += 1;
+              goblinSkillCounter += 1;
               thisTurnGoblinSkill = false;
               break;
             }
             case 2: { // Goblin has charged and prepare to release.
               goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * goblinSkillDmgFactor * 1.5f);
               player.curHp -= goblinCaused;
-              gSkillCounter = 0;
+              goblinSkillCounter = 0;
               thisTurnGoblinSkill = true;
               break;
             }
@@ -655,7 +650,7 @@ int main(void) {
               break;
           }
           if (player.curHp > 0) {
-            switch (gSkillCounter) {
+            switch (goblinSkillCounter) {
               case 1:
                 printf("The goblin mage is charging, and a magic barrier appears in front of them.\n");
                 break;
@@ -670,10 +665,10 @@ int main(void) {
                 break;
             }
             if (thisTurnGoblinSkill) {
-              printf("The goblin mage has charged up and cast pyroblast on you, dealing %d damage\n",
+              printf("The goblin mage has charged up and cast pyroblast on you, dealing %d damage.\n",
                      (int) goblinCaused);
             } else {
-              printf("It's an opportunity for goblin to cast fireball on you, dealing %d damage\n",
+              printf("It's an opportunity for goblin to cast fireball on you, dealing %d damage.\n",
                      (int) goblinCaused);
             }
             getchar();
@@ -689,7 +684,7 @@ int main(void) {
             } else {
               printf("The goblin released the dragon flame, dealing %d damage.\n",
                      (int) goblinCaused);
-              printf("You can't resist such a terrifying attack at all and evaporated in the flame...\n");
+              printf("You can't resist such terrifying power at all and evaporated in the flame...\n");
             }
             getchar();
             isGameOver = false;
