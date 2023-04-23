@@ -49,49 +49,45 @@ BattleResult giantRatBattle() {
   // Skill: Whenever rat attacks twice in a row,
   // the third Attack will be a critical strike (this Attack does not count as two consecutive attacks),
   // causing double Attack.
-  int playerSkill1Counter = 0;
-  int ratSkillCounter = 0;
+  int shieldBashCounter = 0;
+  int ratAttackCounter = 0;
   while (true) {
     turn++;
     displayNewTurnBanner(player, enemy, turn);
     ActionType choice = getActionChoice();
     printf("\n");
+    const int _ratAttackCounter = ratAttackCounter;
+    const int _shieldBashCounter = shieldBashCounter;
     switch (choice) {
       case Attack: {
         float ratCaused;
         float playerCaused;
-        int thisTurnRatSkill;
-        int thisTurnPlayerSkill1;
         // Check the skill "Shield Bash"
-        if (playerSkill1Counter >= 2) {// if trigger
+        if (_shieldBashCounter >= 2) {// if trigger
           enemy->armor *= 1.0f - shieldBashPenetrate;
           playerCaused = calcDamageFor(player, enemy, player->type->attackPower * shieldBashMul);
           enemy->armor = enemy->type->armor;
-          playerSkill1Counter = 0;
-          thisTurnPlayerSkill1 = 1;
+          shieldBashCounter = 0;
         } else { // if not trigger
           playerCaused = calcDamageFor(player, enemy, player->type->attackPower);
-          playerSkill1Counter = 0;
-          thisTurnPlayerSkill1 = 0;
+          shieldBashCounter = 0;
         }
         enemy->curHp -= playerCaused;
         // Check rat's skill
-        if (ratSkillCounter >= 2) { // if trigger
+        if (ratAttackCounter >= 2) { // if trigger
           ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 2);
-          ratSkillCounter = 0;
-          thisTurnRatSkill = 1;
+          ratAttackCounter = 0;
         } else { // if not trigger
           ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
-          ratSkillCounter += 1;
-          thisTurnRatSkill = 0;
+          ratAttackCounter++;
         }
         player->curHp -= ratCaused;
         if (enemy->curHp > 0 && player->curHp > 0) { //Not yet killed
-          if (thisTurnPlayerSkill1 == 1) {
+          if (_shieldBashCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
           printf("You hit the rat and cause %d damage.\n\n", (int) playerCaused);
-          if (thisTurnRatSkill == 1) {
+          if (_ratAttackCounter >= 2) {
             printf("The Giant rat has attacked twice in a row, and this time it is full of energy!\n");
           }
           printf("The Giant rat bit you heavily and caused %d damage.\n", (int) ratCaused);
@@ -100,7 +96,7 @@ BattleResult giantRatBattle() {
           continue;
         } else if (enemy->curHp <= 0) {  //Killed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-          if (thisTurnPlayerSkill1 == 1) {
+          if (_shieldBashCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
           printf("You made a critical strike on the rat!\n");
@@ -109,11 +105,11 @@ BattleResult giantRatBattle() {
           return BattleWin;
         } else { //Failed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-          if (thisTurnPlayerSkill1 == 1) {
+          if (_shieldBashCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
           printf("You hit the rat and cause %d damage.\n", (int) playerCaused);
-          if (thisTurnRatSkill == 1) {
+          if (_shieldBashCounter >= 2) {
             printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
           }
           printf("The giant rat suddenly hit you with a fatal blow!\n");
@@ -124,24 +120,19 @@ BattleResult giantRatBattle() {
       case Parry: {
         float ratCaused;
         player->armor *= 2;
-        bool thisTurnRatSkill;
         // Check rat's skill
-        if (ratSkillCounter >= 2) { // if trigger
+        if (_ratAttackCounter >= 2) { // if trigger
           ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 2);
-          ratSkillCounter = 0;
-          thisTurnRatSkill = true;
+          ratAttackCounter = 0;
         } else { // if not trigger
           ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
-          ratSkillCounter += 1;
-          thisTurnRatSkill = false;
+          ratAttackCounter++;
         }
         player->curHp -= ratCaused;
         if (player->curHp > 0) {
-          if (player->type->level == 2) {
-            playerSkill1Counter += 1;
-          }
+          shieldBashCounter += 1;
           printf("You raised the shield and defended.\n");
-          if (thisTurnRatSkill == 1) {
+          if (_ratAttackCounter >= 2) {
             printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
           }
           printf("The giant Rat bit you heavily and caused %d damage.\n", (int) ratCaused);
@@ -152,7 +143,7 @@ BattleResult giantRatBattle() {
         } else {
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("You raised the shield and tried to defend.\n");
-          if (thisTurnRatSkill == 1) {
+          if (_ratAttackCounter >= 2) {
             printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
           }
           printf("But giant rat countered your defense...\n");
