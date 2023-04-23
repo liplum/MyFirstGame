@@ -39,13 +39,17 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
-            const hasDrafts = releases.some(release => release.draft)
-            return hasDrafts
+            const draft = releases.find(release => release.draft);
+            return draft ? draft.id : false;
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Release Draft
-        if: steps.check_drafts.outputs.result == 'false'
+      - name: Create or Update Release Draft
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create new --draft dist/**
+        run: |
+          if [ "${{ steps.check_drafts.outputs.result }}" == "false" ]; then
+            gh release create new --draft dist/**
+          else
+            gh release upload "${{ steps.check_drafts.outputs.result }}" dist/** --clobber
+          fi
