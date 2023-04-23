@@ -7,15 +7,14 @@
 
 #include "entity.h"
 
-PlayerInfo playerInfo = (PlayerInfo) {
+PlayerType playerType = (PlayerType) {
   .maxHp = 150.0f,
   .attack = 10.0f,
   .armor = 4.0f,
-  .level = 1,
-  .exp = 0,
+  .attackPower = 100,
 };
 
-EnemyInfo enemySlime = (EnemyInfo) {
+EnemyType enemySlime = (EnemyType) {
   .name = "Slime",
   .maxHp = 60.0f,
   .attack = 12.0f,
@@ -25,7 +24,7 @@ EnemyInfo enemySlime = (EnemyInfo) {
 };
 
 
-EnemyInfo enemyRat = (EnemyInfo) {
+EnemyType enemyRat = (EnemyType) {
   .name = "Rat",
   .maxHp = 85.0f,
   .attack = 17.0f,
@@ -34,7 +33,7 @@ EnemyInfo enemyRat = (EnemyInfo) {
   .level = 2,
 };
 
-EnemyInfo enemyGoblinMage = (EnemyInfo) {
+EnemyType enemyGoblinMage = (EnemyType) {
   .name = "Goblin Mage",
   .maxHp = 180.0f,
   .attack = 20.0f,

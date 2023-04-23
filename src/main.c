@@ -62,20 +62,15 @@ float calcEnemyDamage(float power) {
   return calcDamage(curEnemy.info->level, curEnemy.attack, power, player.armor);
 }
 
-void playerAttributesUpgrade(Upgrade upgrade) {
-  printf("\nYour max HP+%d, attack+%d, armor+%d.\n\n", (int) upgrade.hp, (int) upgrade.attack, (int) upgrade.armor);
-  player.info->maxHp += upgrade.hp;
-  player.attack += upgrade.attack;
-  player.armor += upgrade.armor;
-}
-
 void playerRestoreAttributes() {
-  player.curHp = player.info->maxHp;
+  player.curHp = player.info->type->maxHp;
 }
 
 void newTurnStart() {
   turn++;
+#if !defined(__CLION__)
   clearScreen();
+#endif
   printf("------------------------------------------------------------");
   printf("\n[Turn %d]\n\n", turn);
   printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.info->name, (int) curEnemy.curHp);
@@ -95,7 +90,7 @@ void warning() {
 
 
 int main(void) {
-#ifdef _WIN32
+#ifndef __CLION__
   setvbuf(stdout, NULL, _IONBF, 0);
 #endif
   srand((unsigned) time(NULL));
@@ -103,6 +98,11 @@ int main(void) {
   printf("         **********************\n");
   printf("         * First Game V 1.5.0 *\n");
   printf("         **********************       Last Change: 4/23/2023    by Liplum\n");
+  PlayerInfo playerInfo = (PlayerInfo) {
+    .type = &playerType,
+    .level = 1,
+    .exp = 0,
+  };
   part_slime:
   {
     player = createPlayer(&playerInfo);
@@ -137,8 +137,7 @@ int main(void) {
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
             printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
-            printf("Slime hit you and caused %d attack!", (int) slimeCaused);
-            getchar();
+            printf("Slime hit you and caused %d attack!\n", (int) slimeCaused);
             getchar();
             goto loop_slime;
           } else if (curEnemy.curHp <= 0) { //Killed
@@ -153,19 +152,17 @@ int main(void) {
             printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
             printf("Slime rushed swiftly and consumed you!\n");
             getchar();
-            getchar();
             goto die;
           }
         }
         case PARRY: {
           player.armor *= 2;
           float slimeCaused = calcEnemyDamage(100);
-          player.armor = playerInfo.armor;
+          player.armor = playerType.armor;
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
             printf("You raised the shield and defended.\n");
             printf("Slime hit you and cause %d!\n", (int) slimeCaused);
-            getchar();
             getchar();
             goto loop_slime;
           } else {
@@ -182,7 +179,6 @@ int main(void) {
           player.curHp -= curEnemy.attack;
           if (player.curHp > 0) {
             printf("You were distracted and caught by slimes. You lost %d attack.\n", (int) slimeCaused);
-            getchar();
             getchar();
             goto loop_slime;
           } else {
@@ -212,12 +208,6 @@ int main(void) {
       player.info->level += 1;
       player.info->exp -= 100;
       printf("\nUpgraded! Your level is %d now!\n", player.info->level);
-      getchar();
-      playerAttributesUpgrade((Upgrade) {
-        .hp=80,
-        .attack = 6,
-        .armor=8,
-      });
       getchar();
       printf("\nYou learnt a new skill \"Shield Bash\"!\n");
       printf(
@@ -394,12 +384,6 @@ int main(void) {
       player.info->level += 1;
       player.info->exp -= 300;
       printf("\nUpgraded! Your level is %d now!\n", player.info->level);
-      getchar();
-      playerAttributesUpgrade((Upgrade) {
-        .hp = 150,
-        .attack = 10,
-        .armor = 10,
-      });
       getchar();
       printf("\nYou learnt a new skill \"Offense To Defense\"!\n");
       printf(

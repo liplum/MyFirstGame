@@ -29,7 +29,22 @@ jobs:
           # Extract MyFirstGame.exe from Windows (x64)/Release
           cp download/"Windows (x64)"/Release/MyFirstGame.exe dist/MyFirstGame-Windows-x64.exe
 
+      - name: Check for Existing Drafts
+        id: check_drafts
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: releases } = await github.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            const hasDrafts = releases.some(release => release.draft)
+            return hasDrafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release Draft
+        if: steps.check_drafts.outputs.result == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release create new --draft dist/**
