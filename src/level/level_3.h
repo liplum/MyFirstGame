@@ -2,11 +2,10 @@
 // Created by Liplum on 4/24/2023.
 //
 
+#include "../game.h"
+
 #ifndef LEVEL_3_H
 #define LEVEL_3_H
-
-#include "../entity.h"
-#include "../game.h"
 
 const PlayerType playerLv3 = {
   .maxHp = 280.0f,
@@ -16,7 +15,7 @@ const PlayerType playerLv3 = {
   .level = 3,
 };
 
-EnemyType enemyGoblinMage = {
+const EnemyType enemyGoblinMage = {
   .name = "Goblin Mage",
   .maxHp = 320.0f,
   .attack = 24.0f,

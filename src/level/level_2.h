@@ -1,11 +1,10 @@
 //
 // Created by Liplum on 4/24/2023.
 //
+#include "../game.h"
 
 #ifndef LEVEL_2_H
 #define LEVEL_2_H
-
-#include "../game.h"
 
 const PlayerType playerLv2 = {
   .maxHp = 190.0f,
@@ -18,7 +17,7 @@ const PlayerType playerLv2 = {
 const float shieldBashMul = 2.0f;
 const float shieldBashPenetrate = 0.5f;
 
-EnemyType enemyRat = {
+const EnemyType enemyRat = {
   .name = "Rat",
   .maxHp = 240.0f,
   .attack = 18.0f,
