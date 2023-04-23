@@ -92,9 +92,9 @@ int main(void) {
     .exp=0
   };
   clearScreen();
-  printf("                **********************\n");
-  printf("                * First Game V 1.4.1 *\n");
-  printf("                **********************       Last Change: 4/14/2023    by Liplum\n");
+  printf("         **********************\n");
+  printf("         * First Game V 1.4.1 *\n");
+  printf("         **********************       Last Change: 4/23/2023    by Liplum\n");
   part_slime:
   {
     part = 1;
@@ -123,16 +123,14 @@ int main(void) {
 
     loop_slime:
     {
-      int playerCaused;
-      int slimeCaused;
       newTurnStart();
       int choice = getChoice();
       printf("\n");
       switch (choice) {
         case ATTACK: {
-          playerCaused = waving(player.damage);
+          int playerCaused = waving(player.damage);
           curEnemy.curHp -= playerCaused;
-          slimeCaused = waving(curEnemy.damage) - player.armor;
+          int slimeCaused = waving(curEnemy.damage) - player.armor;
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
             printf("\nYou slashed the enemy and cause %d damage!\n\n", playerCaused);
@@ -158,7 +156,7 @@ int main(void) {
         }
           break;
         case PARRY: {
-          slimeCaused = waving(curEnemy.damage) - player.armor * 2;
+          int slimeCaused = waving(curEnemy.damage) - player.armor * 2;
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
             printf("\nYou raised the shield and defended.\n");
@@ -177,7 +175,7 @@ int main(void) {
           break;
         case Withdraw: {
           printf("\nSlime stuck your legs.\n");
-          slimeCaused = waving(curEnemy.damage);
+          int slimeCaused = waving(curEnemy.damage);
           player.curHp -= curEnemy.damage;
           if (player.curHp > 0) {
             printf("\nYou were distracted and caught by slimes. You lost %d damage.\n\n", slimeCaused);
@@ -246,15 +244,15 @@ int main(void) {
     int ratSkillCounter = 0;
     loop_rat:
     {
-      int ratCaused;
-      int playerCaused;
-      int thisTurnRatSkill;
-      int thisTurnPlayerSkill1;
       newTurnStart();
       int choice = getChoice();
       printf("\n");
       switch (choice) {
         case ATTACK: {
+          int ratCaused;
+          int playerCaused;
+          int thisTurnRatSkill;
+          int thisTurnPlayerSkill1;
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.level == 2) {// if trigger
             playerCaused = waving(player.damage) * 3;
@@ -320,6 +318,8 @@ int main(void) {
         }
           break;
         case PARRY: {
+          int ratCaused;
+          int thisTurnRatSkill;
           // Check rat's skill
           if (ratSkillCounter >= 2) {
             ratCaused = waving(curEnemy.damage) * 2;
@@ -361,7 +361,7 @@ int main(void) {
           break;
         case Withdraw: {
           printf("\nThe giant rat bit your shoulder. You can't not move!\n");
-          ratCaused = waving(curEnemy.damage) * 1.5f;
+          int ratCaused = waving(curEnemy.damage) * 1.5f;
           player.curHp -= ratCaused;
           if (player.curHp > 0) {
             printf("\nYou were controlled by a giant rat, and it bit at your neck causing %d damage!\n\n",
@@ -448,16 +448,15 @@ int main(void) {
     loop_goblin:
     {
       int GRand;
-      int thisTurnPlayerSkill1;
-      int thisTurnPlayerSkill2 = 0;
-      int thisTurnGoblinSkill = 0;
-      int goblinCaused = 0;
-      int playerCaused;
       newTurnStart();
       int choice = getChoice();
       printf("\n");
       switch (choice) {
         case ATTACK: {
+          int thisTurnPlayerSkill1;
+          int thisTurnGoblinSkill;
+          int goblinCaused;
+          int playerCaused;
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.level >= 2) {
             playerCaused = waving(player.damage) * 3;
@@ -567,6 +566,9 @@ int main(void) {
         }
           break;
         case PARRY: {
+          int thisTurnPlayerSkill2;
+          int thisTurnGoblinSkill;
+          int goblinCaused;
           // Check goblin charging
           switch (gSkillCounter) {
             case 0: { // Goblin is not charging. roll to start charging
@@ -669,6 +671,8 @@ int main(void) {
         }
           break;
         case Withdraw: {
+          int thisTurnGoblinSkill;
+          int goblinCaused;
           printf(
             "\nThe goblin mage chanted a series of incantations, released a magic circle under your feet, and you were imprisoned!\n");
 

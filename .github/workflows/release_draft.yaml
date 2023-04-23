@@ -1,0 +1,15 @@
+name: Create Release Draft
+on:
+  workflow_dispatch:
+    workflows: [ "Build My First Game" ]
+    branches: [ master ]
+    types:
+      - completed
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: |
+          echo "just test"
