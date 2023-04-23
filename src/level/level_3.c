@@ -6,9 +6,25 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "level_3.h"
-#include "../game.h"
 #include "../console.h"
 #include "level_2.h"
+
+const PlayerType playerLv3 = {
+  .maxHp = 280.0f,
+  .attack = 18.0f,
+  .armor = 18.0f,
+  .attackPower = 150,
+  .level = 3,
+};
+
+const EnemyType enemyGoblinMage = {
+  .name = "Goblin Mage",
+  .maxHp = 320.0f,
+  .attack = 24.0f,
+  .armor = 8.0f,
+  .level = 3,
+  .attackPower = 180,
+};
 
 BattleResult goblinMageBattle() {
   Player *player = createPlayer(&playerLv3);

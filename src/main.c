@@ -33,10 +33,11 @@ int main(void) {
   for (int i = 0; i < LevelCount; ++i) {
     BattleResult result = levels[i]();
     switch (result) {
-      case BattleWin:
+      case BattleWin: {
         printf("Press Enter to continue...");
         getchar();
         continue;
+      }
       case BattleLoss: {
         clearScreen();
         printf("\t\t***********\n");
@@ -47,12 +48,11 @@ int main(void) {
     }
   }
 
-  getchar();
   printf("*----*------*------*------*------*------*------*------*------*-----*");
   printf("|              Congratulations! you passed the game.                |\n");
   printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
   printf("*-----*------*------*------*------*------*------*------*------*-----*");
-
+  getchar();
   getchar();
   return 0;
 }

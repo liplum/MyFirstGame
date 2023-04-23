@@ -5,26 +5,11 @@
 
 #ifndef LEVEL_2_H
 #define LEVEL_2_H
+extern const PlayerType playerLv2;
+extern const EnemyType enemyRat;
 
-const PlayerType playerLv2 = {
-  .maxHp = 190.0f,
-  .attack = 12.5f,
-  .armor = 10.0f,
-  .attackPower = 130,
-  .level = 2,
-};
-
-const float shieldBashMul = 2.0f;
-const float shieldBashPenetrate = 0.5f;
-
-const EnemyType enemyRat = {
-  .name = "Rat",
-  .maxHp = 240.0f,
-  .attack = 18.0f,
-  .armor = 5.0f,
-  .level = 2,
-  .attackPower = 150,
-};
+extern const float shieldBashMul;
+extern const float shieldBashPenetrate;
 
 BattleResult giantRatBattle();
 

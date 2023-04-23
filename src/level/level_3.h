@@ -7,22 +7,10 @@
 #ifndef LEVEL_3_H
 #define LEVEL_3_H
 
-const PlayerType playerLv3 = {
-  .maxHp = 280.0f,
-  .attack = 18.0f,
-  .armor = 18.0f,
-  .attackPower = 150,
-  .level = 3,
-};
+extern const PlayerType playerLv3;
 
-const EnemyType enemyGoblinMage = {
-  .name = "Goblin Mage",
-  .maxHp = 320.0f,
-  .attack = 24.0f,
-  .armor = 8.0f,
-  .level = 3,
-  .attackPower = 180,
-};
+extern const EnemyType enemyGoblinMage;
 
 BattleResult goblinMageBattle();
+
 #endif //LEVEL_3_H
