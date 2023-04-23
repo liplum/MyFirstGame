@@ -49,7 +49,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ steps.check_drafts.outputs.result }}" == "false" ]; then
+            echo "creating a new release draft"
             gh release create new --draft dist/**
           else
+            echo "updating an existing release draft"
             gh release upload "${{ steps.check_drafts.outputs.result }}" dist/** --clobber
           fi
