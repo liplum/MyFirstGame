@@ -20,7 +20,7 @@ typedef struct {
   float armor;
 } Player;
 
-Player createPlayer(const PlayerType *type);
+Player *createPlayer(const PlayerType *type);
 
 typedef struct {
   char *name;
@@ -38,6 +38,6 @@ typedef struct {
   float armor;
 } Enemy;
 
-Enemy createEnemy(const EnemyType *type);
+Enemy *createEnemy(const EnemyType *type) ;
 
 #endif //ENTITY_H

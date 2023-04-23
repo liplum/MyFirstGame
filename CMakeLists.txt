@@ -5,6 +5,6 @@ add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(MyFirstGame src/main.c src/entity.h src/entity.c src/levels.h)
+add_executable(MyFirstGame src/main.c src/entity.h src/entity.c src/levels.h src/game.h src/game.c src/level/level_1.c src/level/level_1.h src/console.h src/console.c)
 
 set_target_properties(MyFirstGame PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

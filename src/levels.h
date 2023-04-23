@@ -7,14 +7,6 @@
 
 #include "entity.h"
 
-const PlayerType playerLv1 = {
-  .maxHp = 130.0f,
-  .attack = 10.0f,
-  .armor = 4.0f,
-  .attackPower = 100,
-  .level = 1,
-};
-
 const PlayerType playerLv2 = {
   .maxHp = 190.0f,
   .attack = 12.5f,
@@ -31,14 +23,6 @@ const PlayerType playerLv3 = {
   .level = 3,
 };
 
-const EnemyType enemySlime = {
-  .name = "Slime",
-  .maxHp = 120.0f,
-  .attack = 12.0f,
-  .armor = 2.0f,
-  .level = 1,
-  .attackPower = 100,
-};
 
 
 EnemyType enemyRat = {
