@@ -27,7 +27,7 @@ BattleResult slimeBattle() {
 
   while (true) {
     turn++;
-    displayNewTurn(turn);
+    displayNewTurnBanner(player, enemy, turn);
     ActionType choice = getActionChoice();
     printf("\n");
     switch (choice) {

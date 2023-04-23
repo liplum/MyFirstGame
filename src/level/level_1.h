@@ -23,4 +23,7 @@ const EnemyType enemySlime = {
   .level = 1,
   .attackPower = 100,
 };
+
+BattleResult slimeBattle();
+
 #endif //LEVEL_1_H

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "game.h"
 #include "console.h"
+#include "calculate.h"
 
 ActionType getActionChoice() {
   ActionType choice = 0;
@@ -16,13 +17,13 @@ ActionType getActionChoice() {
   return choice;
 }
 
-void displayNewTurn(int turn) {
+void displayNewTurnBanner(Player *player, Enemy *enemy, int turn) {
 #if !defined(__CLION__)
   clearScreen();
 #endif
   printf("------------------------------------------------------------\n");
   printf("[Turn %d]\n\n", turn);
-  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.type->name, (int) curEnemy.curHp);
+  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player->curHp, enemy->type->name, (int) enemy->curHp);
 }
 
 float calcDamage(int aLv, float aAttack, float aPower, float bArmor) {

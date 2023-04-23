@@ -22,7 +22,7 @@ typedef enum {
 
 ActionType getActionChoice();
 
-void displayNewTurn(int turn);
+void displayNewTurnBanner(Player *player, Enemy *enemy, int turn);
 
 float calcDamage(int aLv, float aAttack, float aPower, float bArmor);
 
