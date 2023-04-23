@@ -1,6 +1,6 @@
 name: Create Release Draft
 on:
-  workflow_dispatch:
+  workflow_run:
     workflows: [ "Build My First Game" ]
     branches: [ master ]
     types:
