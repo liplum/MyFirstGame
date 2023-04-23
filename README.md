@@ -20,6 +20,12 @@ Build this game with CMake.
 
 I can't remember what I did in this update.
 
+
+#### [v1.0.1] *2/9/2019*
+
+Slime was added to the game.
+
+
 ### Tutorial
 
 [Clion with CMake](https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html)
