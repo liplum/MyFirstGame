@@ -78,6 +78,9 @@ void warning() {
   printf("\a");
 }
 
+const float shieldBashMul = 2.0f;
+const float shieldBashPenetrate = 0.5f;
+
 int main(void) {
 #ifndef __CLION__
   setvbuf(stdout, NULL, _IONBF, 0);
@@ -120,8 +123,8 @@ int main(void) {
           float slimeCaused = calcEnemyDamage(curEnemy.type->attackPower);
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
-            printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
-            printf("Slime hit you and caused %d attack!\n", (int) slimeCaused);
+            printf("You slashed the enemy and cause %d damage!\n", (int) playerCaused);
+            printf("Slime hit you and caused %d damage!\n", (int) slimeCaused);
             getchar();
             getchar();
             goto loop_slime;
@@ -134,7 +137,7 @@ int main(void) {
             goto end;
           } else { //Failed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
+            printf("You slashed the enemy and cause %d damage!\n", (int) playerCaused);
             printf("Slime rushed swiftly and consumed you!\n");
             getchar();
             getchar();
@@ -166,7 +169,7 @@ int main(void) {
           float slimeCaused = calcEnemyDamage(curEnemy.type->attackPower * 1.5f);
           player.curHp -= curEnemy.attack;
           if (player.curHp > 0) {
-            printf("You were distracted and caught by slimes. You lost %d attack.\n", (int) slimeCaused);
+            printf("You were distracted and caught by slimes. You lost %d damage.\n", (int) slimeCaused);
             getchar();
             getchar();
             goto loop_slime;
@@ -197,8 +200,9 @@ int main(void) {
     printf("Upgraded! Your level is %d now!\n", player.type->level);
     printf("You learnt a new skill \"Shield Bash\"!\n");
     printf(
-      "Description: Parry twice in a row will charge your next attack with 300%% attack and penetrate 50% armor.\n");
+      "Description: Parry twice in a row will charge your next attack with 200%% damage and penetrate 50%% armor.\n");
     clearScreen();
+    getchar();
     getchar();
     warning();
     printf("A giant rat followed closely.");
@@ -226,8 +230,8 @@ int main(void) {
           int thisTurnPlayerSkill1;
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2) {// if trigger
-            curEnemy.armor *= 0.5;
-            playerCaused = calcPlayerDamage(player.type->attackPower * 3);
+            curEnemy.armor *= 1.0f - shieldBashPenetrate;
+            playerCaused = calcPlayerDamage(player.type->attackPower * shieldBashMul);
             curEnemy.armor = curEnemy.type->armor;
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 1;
@@ -252,11 +256,11 @@ int main(void) {
             if (thisTurnPlayerSkill1 == 1) {
               printf("Your skill \"Shield Bash\" is triggered.\n");
             }
-            printf("You hit the rat and cause %d attack.\n\n", (int) playerCaused);
+            printf("You hit the rat and cause %d damage.\n\n", (int) playerCaused);
             if (thisTurnRatSkill == 1) {
               printf("The Giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
-            printf("The Giant rat bit you heavily and caused %d attack.\n", (int) ratCaused);
+            printf("The Giant rat bit you heavily and caused %d damage.\n", (int) ratCaused);
             getchar();
             getchar();
             goto loop_rat;
@@ -276,7 +280,7 @@ int main(void) {
             if (thisTurnPlayerSkill1 == 1) {
               printf("Your skill \"Shield Bash\" is triggered.\n");
             }
-            printf("You hit the rat and cause %d attack.\n", (int) playerCaused);
+            printf("You hit the rat and cause %d damage.\n", (int) playerCaused);
             if (thisTurnRatSkill == 1) {
               printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
@@ -309,7 +313,7 @@ int main(void) {
             if (thisTurnRatSkill == 1) {
               printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
             }
-            printf("The giant Rat bit you heavily and caused %d attack.\n", (int) ratCaused);
+            printf("The giant Rat bit you heavily and caused %d damage.\n", (int) ratCaused);
             player.armor = player.type->armor;
             getchar();
             getchar();
@@ -331,7 +335,7 @@ int main(void) {
           float ratCaused = calcEnemyDamage(curEnemy.type->attackPower * 1.5f);
           player.curHp -= ratCaused;
           if (player.curHp > 0) {
-            printf("You were controlled by a giant rat, and it bit at your neck causing %d attack!\n",
+            printf("You were controlled by a giant rat, and it bit at your neck causing %d damage!\n",
                    (int) ratCaused);
             getchar();
             getchar();
@@ -363,8 +367,8 @@ int main(void) {
     clearScreen();
     printf("Upgraded! Your level is %d now!\n", player.type->level);
     printf("You learnt a new skill \"Offense To Defense\"!\n");
-    printf(
-      "Description: Attack three times in a row will charge your next parry to reduce 90%% damage.\n");
+    printf("Description: Attack three times in a row will charge your next parry to reduce 90%% damage.\n");
+    getchar();
     clearScreen();
     getchar();
     printf("You continue to explore forward.");
@@ -405,8 +409,8 @@ int main(void) {
           float playerCaused;
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2) { // if trigger
-            curEnemy.armor *= 0.5;
-            playerCaused = calcPlayerDamage(player.type->attackPower * 3);
+            curEnemy.armor *= 1.0f - shieldBashPenetrate;
+            playerCaused = calcPlayerDamage(player.type->attackPower * shieldBashMul);
             curEnemy.armor = curEnemy.type->armor;
             thisTurnPlayerSkill1 = true;
           } else { // if not trigger
@@ -461,16 +465,16 @@ int main(void) {
             switch (gSkillCounter) {
               case 1:
                 printf("The goblin mage is charging, and a magic barrier appears in front of them.\n");
-                printf("You attacked the goblin mage, but the effect is weak, only caused %d attack.\n",
+                printf("You attacked the goblin mage, but the effect is weak, only caused %d damage.\n",
                        (int) playerCaused);
                 break;
               case 2:
                 printf("The goblin mage is still charging, and the magic barrier is about to burst.\n");
-                printf("You attacked the goblin mage, but the effect is weak, only caused %d attack.\n",
+                printf("You attacked the goblin mage, but the effect is weak, only caused %d damage.\n",
                        (int) playerCaused);
                 break;
               case 0:
-                printf("You attacked the goblin mage and caused %d attack.\n",
+                printf("You attacked the goblin mage and caused %d damage.\n",
                        (int) playerCaused);
                 break;
               default:
@@ -482,7 +486,7 @@ int main(void) {
                 (int) goblinCaused);
             }
             if (gSkillCounter == 0) {
-              printf("The goblin mage cast a fireball on you, dealing %d attack.\n", (int) goblinCaused);
+              printf("The goblin mage cast a fireball on you, dealing %d damage.\n", (int) goblinCaused);
             }
             getchar();
             getchar();
@@ -497,11 +501,11 @@ int main(void) {
             goto win;
           } else { // Failed
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-            printf("You hit the goblin and cause %d attack.\n",
+            printf("You hit the goblin and cause %d damage.\n",
                    (int) playerCaused);
             if (thisTurnGoblinSkill) {
               printf(
-                "After the goblin mage has charged up, they released the pyroblast, dealing %d attack.\n",
+                "After the goblin mage has charged up, they released the pyroblast, dealing %d damage.\n",
                 (int) goblinCaused);
               printf("You exploded in this havoc!\n");
             } else {
@@ -577,7 +581,7 @@ int main(void) {
                 printf("The goblin mage is still charging, and the magic barrier is about to burst.\n");
                 break;
               case 0:
-                printf("Goblin mage cast fireball on you, dealing %d attack.\n",
+                printf("Goblin mage cast fireball on you, dealing %d damage.\n",
                        (int) goblinCaused);
                 break;
               default:
@@ -587,7 +591,7 @@ int main(void) {
               if (thisTurnPlayerSkill2) {
                 printf("The goblin released released the pyroblast on you, but blocked by your tough shield.\n");
               } else {
-                printf("After the goblin mage has charged up, they released the pyroblast, dealing %d attack.\n",
+                printf("After the goblin mage has charged up, they released the pyroblast, dealing %d damage.\n",
                        (int) goblinCaused);
               }
             }
@@ -602,11 +606,11 @@ int main(void) {
             }
             printf("You raised the shield and defended.\n");
             if (thisTurnGoblinSkill && thisTurnPlayerSkill2) {
-              printf("The goblin mage has charged up and released pyroblast on you, dealing %d attack.\n",
+              printf("The goblin mage has charged up and released pyroblast on you, dealing %d damage.\n",
                      (int) goblinCaused);
               printf("Your shield was burned and melted, and you were also wiped out in the flames...\n");
             } else {
-              printf("The goblin mage cast dragon flames on you, dealing %d attack.\n",
+              printf("The goblin mage cast dragon flames on you, dealing %d damage.\n",
                      (int) goblinCaused);
               printf("You couldn't resist such a powerful spell at all. You were wiped out in the flames...\n");
             }
@@ -659,17 +663,17 @@ int main(void) {
                 printf("The goblin mage is still charging, and the magic barrier is about to burst.\n");
                 break;
               case 0:
-                printf("Goblin mage cast fireball on you, dealing %d attack.\n",
+                printf("Goblin mage cast fireball on you, dealing %d damage.\n",
                        (int) goblinCaused);
                 break;
               default:
                 break;
             }
             if (thisTurnGoblinSkill) {
-              printf("The goblin mage has charged up and cast pyroblast on you, dealing %d attack\n",
+              printf("The goblin mage has charged up and cast pyroblast on you, dealing %d damage\n",
                      (int) goblinCaused);
             } else {
-              printf("It's an opportunity for goblin to cast fireball on you, dealing %d attack\n",
+              printf("It's an opportunity for goblin to cast fireball on you, dealing %d damage\n",
                      (int) goblinCaused);
             }
             getchar();
@@ -679,11 +683,11 @@ int main(void) {
           if (player.curHp <= 0) {
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             if (thisTurnGoblinSkill) {
-              printf("After the goblin mage has charged up, they cast the pyroblast, dealing %d attack.\n",
+              printf("After the goblin mage has charged up, they cast the pyroblast, dealing %d damage.\n",
                      (int) goblinCaused);
               printf("You exploded in this havoc!\n");
             } else {
-              printf("The goblin released the dragon flame, dealing %d attack.\n",
+              printf("The goblin released the dragon flame, dealing %d damage.\n",
                      (int) goblinCaused);
               printf("You can't resist such a terrifying attack at all and evaporated in the flame...\n");
             }
