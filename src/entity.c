@@ -6,7 +6,7 @@
 
 Player createPlayer(const PlayerType *type) {
   return (Player) {
-    .info = type,
+    .type = type,
     .curHp = type->maxHp,
     .attack = type->attack,
     .armor = type->armor,
@@ -16,7 +16,7 @@ Player createPlayer(const PlayerType *type) {
 
 Enemy createEnemy(const EnemyType *type) {
   return (Enemy) {
-    .info = type,
+    .type = type,
     .curHp = type->maxHp,
     .attack = type->attack,
     .armor = type->armor,

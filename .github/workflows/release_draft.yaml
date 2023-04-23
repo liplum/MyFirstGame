@@ -40,6 +40,7 @@ jobs:
               repo: context.repo.repo,
             })
             const draft = releases.find(release => release.draft);
+            console.log(draft);
             return draft ? draft.id : false;
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

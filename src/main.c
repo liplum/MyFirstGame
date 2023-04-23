@@ -41,7 +41,7 @@ float randfIn(float min, float max) {
 
 float calcDamage(int aLv, float aAttack, float aPower, float bArmor) {
   float randomFactor = randfIn(0.85f, 1.0f);
-  if (bArmor == 0) bArmor = 1;
+  bArmor = bArmor > 1 ? bArmor : 1;
   float damageFactor = aAttack / bArmor;
   float attackerLvFactor = 2 * (float) aLv / 5 + 2;
   float damage = attackerLvFactor * aPower * damageFactor / 50;
@@ -49,11 +49,11 @@ float calcDamage(int aLv, float aAttack, float aPower, float bArmor) {
 }
 
 float calcPlayerDamage(float power) {
-  return calcDamage(player.info->level, player.attack, power, curEnemy.armor);
+  return calcDamage(player.type->level, player.attack, power, curEnemy.armor);
 }
 
 float calcEnemyDamage(float power) {
-  return calcDamage(curEnemy.info->level, curEnemy.attack, power, player.armor);
+  return calcDamage(curEnemy.type->level, curEnemy.attack, power, player.armor);
 }
 
 void newTurnStart() {
@@ -63,7 +63,7 @@ void newTurnStart() {
 #endif
   printf("------------------------------------------------------------");
   printf("\n[Turn %d]\n\n", turn);
-  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.info->name, (int) curEnemy.curHp);
+  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player.curHp, curEnemy.type->name, (int) curEnemy.curHp);
 }
 
 int getChoice() {
@@ -114,9 +114,9 @@ int main(void) {
       printf("\n");
       switch (choice) {
         case ATTACK: {
-          float playerCaused = calcPlayerDamage(playerLv1.attackPower);
+          float playerCaused = calcPlayerDamage(player.type->attackPower);
           curEnemy.curHp -= playerCaused;
-          float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower);
+          float slimeCaused = calcEnemyDamage(curEnemy.type->attackPower);
           player.curHp -= slimeCaused;
           if (curEnemy.curHp > 0 && player.curHp > 0) { //Not yet killed
             printf("You slashed the enemy and cause %d attack!\n", (int) playerCaused);
@@ -140,13 +140,13 @@ int main(void) {
         }
         case PARRY: {
           player.armor *= 2;
-          float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower);
+          float slimeCaused = calcEnemyDamage(curEnemy.type->attackPower);
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
             printf("You raised the shield and defended.\n");
             printf("Slime hit you and cause %d!\n", (int) slimeCaused);
             getchar();
-            player.armor = player.info->armor;
+            player.armor = player.type->armor;
             goto loop_slime;
           } else {
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -158,7 +158,7 @@ int main(void) {
         }
         case Withdraw: {
           printf("Slime stuck your legs.\n");
-          float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower * 1.5f);
+          float slimeCaused = calcEnemyDamage(curEnemy.type->attackPower * 1.5f);
           player.curHp -= curEnemy.attack;
           if (player.curHp > 0) {
             printf("You were distracted and caught by slimes. You lost %d attack.\n", (int) slimeCaused);
@@ -187,10 +187,10 @@ int main(void) {
     turn = 0;
     isGameOver = false;
     clearScreen();
-    printf("Upgraded! Your level is %d now!\n", player.info->level);
+    printf("Upgraded! Your level is %d now!\n", player.type->level);
     printf("You learnt a new skill \"Shield Bash\"!\n");
     printf(
-      "Description: Parry twice in a row will charge your next attack with 300%% attack and pass through armor.\n");
+      "Description: Parry twice in a row will charge your next attack with 300%% attack and penetrate 50% armor.\n");
     clearScreen();
     getchar();
     warning();
@@ -218,23 +218,25 @@ int main(void) {
           int thisTurnRatSkill;
           int thisTurnPlayerSkill1;
           // Check the skill "Shield Bash"
-          if (playerSkill1Counter >= 2 && player.info->level == 2) {// if trigger
-            playerCaused = calcPlayerDamage(playerLv1.attackPower * 3);
+          if (playerSkill1Counter >= 2) {// if trigger
+            curEnemy.armor *= 0.5;
+            playerCaused = calcPlayerDamage(player.type->attackPower * 3);
+            curEnemy.armor = curEnemy.type->armor;
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 1;
           } else { // if not trigger
-            playerCaused = calcPlayerDamage(playerLv1.attackPower);
+            playerCaused = calcPlayerDamage(player.type->attackPower);
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 0;
           }
           curEnemy.curHp -= playerCaused;
           // Check rat's skill
           if (ratSkillCounter >= 2) { // if trigger
-            ratCaused = calcEnemyDamage(curEnemy.info->attackPower * 2);
+            ratCaused = calcEnemyDamage(curEnemy.type->attackPower * 2);
             ratSkillCounter = 0;
             thisTurnRatSkill = 1;
           } else { // if not trigger
-            ratCaused = calcEnemyDamage(curEnemy.info->attackPower);
+            ratCaused = calcEnemyDamage(curEnemy.type->attackPower);
             ratSkillCounter += 1;
             thisTurnRatSkill = 0;
           }
@@ -281,17 +283,17 @@ int main(void) {
           bool thisTurnRatSkill;
           // Check rat's skill
           if (ratSkillCounter >= 2) { // if trigger
-            ratCaused = calcEnemyDamage(curEnemy.info->attackPower * 2);
+            ratCaused = calcEnemyDamage(curEnemy.type->attackPower * 2);
             ratSkillCounter = 0;
             thisTurnRatSkill = true;
           } else { // if not trigger
-            ratCaused = calcEnemyDamage(curEnemy.info->attackPower);
+            ratCaused = calcEnemyDamage(curEnemy.type->attackPower);
             ratSkillCounter += 1;
             thisTurnRatSkill = false;
           }
           player.curHp -= ratCaused;
           if (player.curHp > 0) {
-            if (player.info->level == 2) {
+            if (player.type->level == 2) {
               playerSkill1Counter += 1;
             }
             printf("You raised the shield and defended.\n");
@@ -300,7 +302,7 @@ int main(void) {
             }
             printf("The giant Rat bit you heavily and caused %d attack.\n", (int) ratCaused);
             getchar();
-            player.armor = player.info->armor;
+            player.armor = player.type->armor;
             goto loop_rat;
           } else {
             printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -316,7 +318,7 @@ int main(void) {
         }
         case Withdraw: {
           printf("The giant rat bit your shoulder. You can't not move!\n");
-          float ratCaused = calcEnemyDamage(curEnemy.info->attackPower * 1.5f);
+          float ratCaused = calcEnemyDamage(curEnemy.type->attackPower * 1.5f);
           player.curHp -= ratCaused;
           if (player.curHp > 0) {
             printf("You were controlled by a giant rat, and it bit at your neck causing %d attack!\n",
@@ -349,10 +351,10 @@ int main(void) {
     isGameOver = false;
     int gSkillCounter = 0;
     clearScreen();
-    printf("Upgraded! Your level is %d now!\n", player.info->level);
+    printf("Upgraded! Your level is %d now!\n", player.type->level);
     printf("You learnt a new skill \"Offense To Defense\"!\n");
     printf(
-      "Description: Attack three times in a row will charge your next parry to reduce 90%% attack.\n");
+      "Description: Attack three times in a row will charge your next parry to reduce 90%% damage.\n");
     clearScreen();
     getchar();
     printf("You continue to explore forward.");
@@ -392,11 +394,13 @@ int main(void) {
           float goblinCaused;
           float playerCaused;
           // Check the skill "Shield Bash"
-          if (playerSkill1Counter >= 2 && player.info->level >= 2) { // if trigger
-            playerCaused = calcPlayerDamage(player.info->attackPower * 3);
+          if (playerSkill1Counter >= 2) { // if trigger
+            curEnemy.armor *= 0.5;
+            playerCaused = calcPlayerDamage(player.type->attackPower * 3);
+            curEnemy.armor = curEnemy.type->armor;
             thisTurnPlayerSkill1 = true;
           } else { // if not trigger
-            playerCaused = calcPlayerDamage(player.info->attackPower * 3);
+            playerCaused = calcPlayerDamage(player.type->attackPower);
             thisTurnPlayerSkill1 = false;
           }
 
@@ -411,7 +415,7 @@ int main(void) {
                 thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 curEnemy.curHp -= playerCaused;
-                goblinCaused = calcEnemyDamage(curEnemy.info->attackPower);
+                goblinCaused = calcEnemyDamage(curEnemy.type->attackPower);
                 player.curHp -= goblinCaused;
                 thisTurnGoblinSkill = false;
               }
@@ -426,7 +430,7 @@ int main(void) {
               break;
             case 2: { // Goblin has charged up
               curEnemy.curHp -= playerCaused;
-              goblinCaused = calcEnemyDamage(curEnemy.info->attackPower * goblinSkillDmgFactor);
+              goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * goblinSkillDmgFactor);
               player.curHp -= goblinCaused;
               gSkillCounter = 0;
               thisTurnGoblinSkill = true;
@@ -438,7 +442,7 @@ int main(void) {
           // Reset skill 1
           playerSkill1Counter = 0;
           if (curEnemy.curHp > 0 && player.curHp > 0) { // Not yet killed
-            if (player.info->level >= 3) {
+            if (player.type->level >= 3) {
               playerSkill2Counter += 1;
             } // count the skill 2
             if (thisTurnPlayerSkill1 == 1) {
@@ -512,11 +516,11 @@ int main(void) {
                 thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 // Check player skill "Offense To Defense"
-                if (playerSkill2Counter >= 3 && player.info->level >= 3) { // if trigger
-                  goblinCaused = calcEnemyDamage(curEnemy.info->attackPower) * 0.1f;
+                if (playerSkill2Counter >= 3 && player.type->level >= 3) { // if trigger
+                  goblinCaused = calcEnemyDamage(curEnemy.type->attackPower) * 0.1f;
                   thisTurnPlayerSkill2 = true;
                 } else { // if not trigger
-                  goblinCaused = calcEnemyDamage(curEnemy.info->attackPower) * 0.1f;
+                  goblinCaused = calcEnemyDamage(curEnemy.type->attackPower) * 0.1f;
                   thisTurnPlayerSkill2 = false;
                 }
                 player.curHp -= goblinCaused;
@@ -531,7 +535,7 @@ int main(void) {
               break;
             case 2: { // Goblin has charged and prepare to release.
               // Check player skill "Offense To Defense"
-              goblinCaused = calcEnemyDamage(curEnemy.info->attackPower * goblinSkillDmgFactor);
+              goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * goblinSkillDmgFactor);
               if (playerSkill2Counter >= 3) {
                 goblinCaused *= 0.1f; // -90% damage
                 thisTurnPlayerSkill2 = true;
@@ -573,11 +577,10 @@ int main(void) {
               } else {
                 printf("After the goblin mage has charged up, they released the pyroblast, dealing %d attack.\n",
                        (int) goblinCaused);
-                printf("You exploded in this havoc!\n");
               }
             }
             getchar();
-            player.armor = player.info->armor;
+            player.armor = player.type->armor;
             goto loop_goblin;
           } else { // Failed
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
@@ -613,7 +616,7 @@ int main(void) {
                 gSkillCounter = 1;
                 thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
-                goblinCaused = calcEnemyDamage(curEnemy.info->attackPower * 1.5f);
+                goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * 1.5f);
                 player.curHp -= goblinCaused;
                 thisTurnGoblinSkill = true;
               }
@@ -625,7 +628,7 @@ int main(void) {
               break;
             }
             case 2: { // Goblin has charged and prepare to release.
-              goblinCaused = calcEnemyDamage(curEnemy.info->attackPower * goblinSkillDmgFactor * 1.5f);
+              goblinCaused = calcEnemyDamage(curEnemy.type->attackPower * goblinSkillDmgFactor * 1.5f);
               player.curHp -= goblinCaused;
               gSkillCounter = 0;
               thisTurnGoblinSkill = true;
@@ -706,20 +709,18 @@ int main(void) {
       // do nothing
     }
     clearScreen();
-    printf("             ***********\n");
-    printf("             *Game Over*\n");
-    printf("             ***********\n");
-    printf("Press Enter to restart.");
-    getchar();
-    clearScreen();
-    goto part_slime;
+    printf("          ***********\n");
+    printf("          *Game Over*\n");
+    printf("          ***********\n");
+    return 0;
   }
   win:
   {
     getchar();
-    printf("\n\n\n\n\n------*------*------*------*------*------*------*------*------*------\n\n\n");
-    printf("Congratulations! you cleared the game. Thank you for playing, please wait for my next work! UwU\n");
-    printf("\n\n------*------*------*------*------*------*------*------*------*------\n");
+    printf("*----*------*------*------*------*------*------*------*------*-----*");
+    printf("|              Congratulations! you passed the game.                |\n");
+    printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
+    printf("*-----*------*------*------*------*------*------*------*------*-----*");
   }
 
   getchar();

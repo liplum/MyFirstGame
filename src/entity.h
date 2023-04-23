@@ -14,7 +14,7 @@ typedef struct {
 } PlayerType;
 
 typedef struct {
-  const PlayerType *info;
+  const PlayerType *type;
   float curHp;
   float attack;
   float armor;
@@ -32,7 +32,7 @@ typedef struct {
 } EnemyType;
 
 typedef struct {
-  const EnemyType *info;
+  const EnemyType *type;
   float curHp;
   float attack;
   float armor;
