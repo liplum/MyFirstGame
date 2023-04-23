@@ -45,7 +45,8 @@ void clearScreen() {
 }
 
 // Progress
-int ending = 0, turn = 0, part = 1;
+bool isGameOver = false; 
+int turn = 0, part = 1;
 
 Player player;
 
@@ -101,7 +102,7 @@ int main(void) {
     part = 1;
     playerRestoreAttributes();
     turn = 0;
-    ending = 0;
+    isGameOver = false;
     printf("Press Enter to start.\n");
     getchar();
     curEnemy = (Enemy) {
@@ -143,7 +144,7 @@ int main(void) {
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             printf("\nA critical strike is performed!\n\n");
             printf("Congratulations! You won the fight.\n\n");
-            ending = 1;
+            isGameOver = true;
             part += 1;
             goto end;
           } else { //Failed
@@ -168,7 +169,7 @@ int main(void) {
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             printf("\nYou raised the shield and tried to defend.\n");
             printf("\nBut enemy countered your defense...\n\n");
-            ending = 0;
+            isGameOver = false;
             goto die;
           }
         }
@@ -184,7 +185,7 @@ int main(void) {
           } else {
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             printf("\nSlime caught you and consumed your body. How poor you are!\n\n");
-            ending = 0;
+            isGameOver = false;
             goto die;
           }
         }
@@ -200,7 +201,7 @@ int main(void) {
   {
     part = 2;
     turn = 0;
-    ending = 0;
+    isGameOver = false;
     curEnemy = (Enemy) {
       .name = "Rat",
       .curHp = waving(85),
@@ -295,7 +296,7 @@ int main(void) {
             }
             printf("\nYou made a critical strike on the rat!\n\n");
             printf("Congratulations! You won the fight.\n\n");
-            ending = 1;
+            isGameOver = true;
             part += 1;
             goto end;
           } else { //Failed
@@ -308,13 +309,12 @@ int main(void) {
               printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n\n");
             }
             printf("\nThe giant rat suddenly hit you with a fatal blow!\n\n");
-            ending = 0;
+            isGameOver = false;
             getchar();
             getchar();
             goto die;
           }
         }
-          break;
         case PARRY: {
           float ratCaused;
           bool thisTurnRatSkill;
@@ -350,13 +350,12 @@ int main(void) {
               printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n\n");
             }
             printf("\nBut giant rat countered your defense...\n\n");
-            ending = 0;
+            isGameOver = false;
             getchar();
             getchar();
             goto die;
           }
         }
-          break;
         case Withdraw: {
           printf("\nThe giant rat bit your shoulder. You can't not move!\n");
           float ratCaused = waving(curEnemy.damage) * 1.5f;
@@ -372,7 +371,7 @@ int main(void) {
             printf("\nYou were held by the giant rat, and it bit off your neck!\n\n");
             getchar();
             getchar();
-            ending = 0;
+            isGameOver = false;
             goto die;
           }
         }
@@ -395,7 +394,7 @@ int main(void) {
     };
     part = 3;
     turn = 0;
-    ending = 0;
+    isGameOver = false;
     int gSkillCounter = 0;
     clearScreen();
     if (player.exp >= 300 && player.level == 2) {
@@ -540,7 +539,7 @@ int main(void) {
             printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
             printf("\nYou mustered up your courage and stabbed the goblin mage with a fatal blow\n\n");
             printf("Congratulations! You won the fight.\n\n");
-            ending = 1;
+            isGameOver = true;
             part += 1;
             goto win;
           } else { // Failed
@@ -557,13 +556,12 @@ int main(void) {
                 "The goblin released the dragon flame.\n\n");
               printf("You can't resist such a terrifying attack at all and evaporated in the flame...\n\n");
             }
-            ending = 0;
+            isGameOver = false;
             getchar();
             getchar();
             goto die;
           }
         }
-          break;
         case PARRY: {
           bool thisTurnPlayerSkill2;
           bool thisTurnGoblinSkill;
@@ -661,15 +659,14 @@ int main(void) {
                      (int) goblinCaused);
               printf("You couldn't resist such a powerful spell at all. You were wiped out in the flames...\n\n");
             }
-            ending = 0;
+            isGameOver = false;
             getchar();
             getchar();
             goto die;
           }
         }
-          break;
         case Withdraw: {
-          int thisTurnGoblinSkill;
+          bool thisTurnGoblinSkill;
           float goblinCaused;
           printf(
             "\nThe goblin mage chanted a series of incantations, released a magic circle under your feet, and you were imprisoned!\n");
@@ -680,24 +677,24 @@ int main(void) {
               GRand = rand() % goblinSkillTriggerChance;
               if (GRand == 0) { // Goblin starts charging
                 gSkillCounter = 1;
-                thisTurnGoblinSkill = 0;
+                thisTurnGoblinSkill = false;
               } else { // Goblin won't charge
                 goblinCaused = waving(curEnemy.damage) * 1.5f;
                 player.curHp -= goblinCaused;
-                thisTurnGoblinSkill = 0;
+                thisTurnGoblinSkill = true;
               }
               break;
             }
             case 1: { // Goblin is charging, already spent 1 turn
               gSkillCounter += 1;
-              thisTurnGoblinSkill = 0;
+              thisTurnGoblinSkill = false;
               break;
             }
             case 2: { // Goblin has charged and prepare to release.
               goblinCaused = (waving(curEnemy.damage) * 3) * 1.5f;
               player.curHp -= goblinCaused;
               gSkillCounter = 0;
-              thisTurnGoblinSkill = 1;
+              thisTurnGoblinSkill = true;
               break;
             }
             default:
@@ -742,7 +739,7 @@ int main(void) {
             }
             getchar();
             getchar();
-            ending = 0;
+            isGameOver = false;
             goto die;
           }
         }
@@ -763,7 +760,7 @@ int main(void) {
   {
     getchar();
 
-    if (ending == 1) {
+    if (isGameOver == 1) {
       int expGain = curEnemy.exp - turn * 3;
 
       if (expGain <= 0)

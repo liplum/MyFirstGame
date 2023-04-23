@@ -16,6 +16,12 @@ jobs:
         with:
           branch: master
           workflow: build.yaml
+          path: dist
           workflow_conclusion: success
       - run:
-          ls -a
+          tree -f
+
+      - name: Create Release Draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create new --draft dist/**
