@@ -6,35 +6,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include "entity.h"
 
 #define ATTACK  1
 #define PARRY  2
 #define Withdraw  3
-
-typedef struct {
-  float curHp;
-  float maxHp;
-  float attack;
-  float armor;
-  int exp;
-  int level;
-} Player;
-
-typedef struct {
-  float hp;
-  float attack;
-  float armor;
-} Upgrade;
-
-typedef struct {
-  char *name;
-  float curHp;
-  float attack;
-  float armor;
-  int exp;
-} Enemy;
-
-float waving(float value);
 
 void clearScreen() {
 #ifdef _WIN32
@@ -45,13 +21,38 @@ void clearScreen() {
 }
 
 // Progress
-bool isGameOver = false; 
+bool isGameOver = false;
 int turn = 0, part = 1;
 
 Player player;
 
 float randomness = 0.1f;
 Enemy curEnemy;
+
+/// Return a random number between [0f,1f]
+float randf() {
+  return (float) rand() / (float) RAND_MAX;
+}
+
+/// Return a random number between [min,max]
+float randfIn(float min, float max) {
+  return randf() * max + min;
+}
+
+float waving(float value) {
+  return value * randfIn(1.0f - randomness, 1.0f + randomness);
+}
+
+float calcDamage(int aLv, float aAttack, float bArmor) {
+  float randomFactor = randfIn(0.85f, 1.0f);
+  return ((((((2 * (float) aLv) / 5 + 2) * aAttack / bArmor) / 50) + 2) * randomFactor) / 100;
+}
+
+float calcDamage(int aLv, float aAttack, float bArmor);
+
+float calcPlayerDamage() {
+  return 0.0f;
+}
 
 void playerAttributesUpgrade(Upgrade upgrade) {
   printf("\nYour max HP+%d, attack+%d, armor+%d.\n\n", (int) upgrade.hp, (int) upgrade.attack, (int) upgrade.armor);
@@ -110,7 +111,8 @@ int main(void) {
       .curHp = waving(60),
       .attack = waving(12),
       .armor = 0,
-      .exp = 200
+      .exp = 200,
+      .level = 1,
     };
     printf("You were found in a forest.\n");
     getchar();
@@ -208,6 +210,7 @@ int main(void) {
       .attack = waving(17),
       .armor = 1,
       .exp = 300,
+      .level = 2,
     };
     clearScreen();
     if (player.exp >= 100 && player.level == 1) {
@@ -391,6 +394,7 @@ int main(void) {
       .attack = waving(20),
       .armor = 8,
       .exp = 600,
+      .level = 3,
     };
     part = 3;
     turn = 0;
@@ -801,27 +805,6 @@ int main(void) {
 
   getchar();
   return 0;
-}
-
-/// Return a random number between [0f,1f]
-float randf() {
-  return (float) rand() / (float) RAND_MAX;
-}
-
-
-/// Return a random number between [min,max]
-float randfIn(float min, float max) {
-  return randf() * max + min;
-}
-
-
-float waving(float value) {
-  return value * randfIn(1.0f - randomness, 1.0f + randomness);
-}
-
-float calcDamage(int aLv, float aAttack, float bArmor) {
-  float randomFactor = randfIn(0.85f, 1.0f);
-  return ((((((2 * (float) aLv) / 5 + 2) * aAttack / bArmor) / 50) + 2) * randomFactor) / 100;
 }
 
 #pragma clang diagnostic pop

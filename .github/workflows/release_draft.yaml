@@ -18,7 +18,7 @@ jobs:
           workflow: build.yaml
           path: download
           workflow_conclusion: success
-      - run:
+      - run: |
           tree
           mkdir dist
           # Extract MyFirstGame from Linux (x64)
