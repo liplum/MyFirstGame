@@ -7,7 +7,7 @@
 
 #include "entity.h"
 
-const PlayerType playerLv1 = (PlayerType) {
+const PlayerType playerLv1 = {
   .maxHp = 150.0f,
   .attack = 10.0f,
   .armor = 4.0f,
@@ -15,7 +15,7 @@ const PlayerType playerLv1 = (PlayerType) {
   .level = 1,
 };
 
-const PlayerType playerLv2 = (PlayerType) {
+const PlayerType playerLv2 = {
   .maxHp = 150.0f,
   .attack = 10.0f,
   .armor = 4.0f,
@@ -23,7 +23,7 @@ const PlayerType playerLv2 = (PlayerType) {
   .level = 2,
 };
 
-const PlayerType playerLv3 = (PlayerType) {
+const PlayerType playerLv3 = {
   .maxHp = 150.0f,
   .attack = 10.0f,
   .armor = 4.0f,
@@ -31,7 +31,7 @@ const PlayerType playerLv3 = (PlayerType) {
   .level = 3,
 };
 
-const EnemyType enemySlime = (EnemyType) {
+const EnemyType enemySlime = {
   .name = "Slime",
   .maxHp = 60.0f,
   .attack = 12.0f,
@@ -41,7 +41,7 @@ const EnemyType enemySlime = (EnemyType) {
 };
 
 
-EnemyType enemyRat = (EnemyType) {
+EnemyType enemyRat = {
   .name = "Rat",
   .maxHp = 85.0f,
   .attack = 17.0f,
@@ -50,7 +50,7 @@ EnemyType enemyRat = (EnemyType) {
   .attackPower = 150,
 };
 
-EnemyType enemyGoblinMage = (EnemyType) {
+EnemyType enemyGoblinMage = {
   .name = "Goblin Mage",
   .maxHp = 180.0f,
   .attack = 20.0f,

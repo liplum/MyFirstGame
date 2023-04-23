@@ -200,12 +200,12 @@ int main(void) {
     clearScreen();
     getchar();
     warning();
-    printf("A giant rat followed closely.\n");
+    printf("A giant rat followed closely.");
     getchar();
-    printf("You have to fight again!\n");
+    printf("You have to fight again!");
     getchar();
 
-    printf("Your Hp is %d. Rat's is %d.\n", (int) player.curHp, (int) curEnemy.curHp);
+    printf("Your Hp is %d. Rat's is %d.", (int) player.curHp, (int) curEnemy.curHp);
     getchar();
     // Skill: Whenever rat attacks twice in a row,
     // the third attack will be a critical strike (this attack does not count as two consecutive attacks),
@@ -363,15 +363,15 @@ int main(void) {
         "Description: Attack three times in a row will charge your next parry to reduce 90%% attack.\n");
     clearScreen();
     getchar();
-    printf("\nYou continue to explore forward.\n");
+    printf("You continue to explore forward.");
     getchar();
     warning();
-    printf("A goblin mage with a staff suddenly jumped out.\n");
+    printf("A goblin mage with a staff suddenly jumped out.");
     getchar();
-    printf("You have no choice but keep fighting!\n");
+    printf("You have no choice but keep fighting!");
     getchar();
 
-    printf("Your Hp is %d. Goblin Mage Hp is %d.\n", (int) player.curHp, (int) curEnemy.curHp);
+    printf("Your Hp is %d. Goblin Mage Hp is %d.", (int) player.curHp, (int) curEnemy.curHp);
     getchar();
     // Skill 1:
     // Each round has a 20% chance to charge for two turns (it won't trigger itself during the charge),

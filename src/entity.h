@@ -24,11 +24,11 @@ Player createPlayer(const PlayerType *type);
 
 typedef struct {
   char *name;
-  float attack;
   float maxHp;
+  float attack;
   float armor;
-  int level;
   float attackPower;
+  int level;
 } EnemyType;
 
 typedef struct {
