@@ -6,6 +6,7 @@
 #define LEVEL_3_H
 
 #include "../entity.h"
+#include "../game.h"
 
 const PlayerType playerLv3 = {
   .maxHp = 280.0f,
@@ -23,4 +24,6 @@ EnemyType enemyGoblinMage = {
   .level = 3,
   .attackPower = 180,
 };
+
+BattleResult goblinMageBattle();
 #endif //LEVEL_3_H

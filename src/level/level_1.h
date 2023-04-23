@@ -1,11 +1,10 @@
 //
 // Created by Liplum on 4/24/2023.
 //
+#include "../entity.h"
 
 #ifndef LEVEL_1_H
 #define LEVEL_1_H
-
-#include "../entity.h"
 
 const PlayerType playerLv1 = {
   .maxHp = 130.0f,

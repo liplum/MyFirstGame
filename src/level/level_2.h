@@ -15,6 +15,9 @@ const PlayerType playerLv2 = {
   .level = 2,
 };
 
+const float shieldBashMul = 2.0f;
+const float shieldBashPenetrate = 0.5f;
+
 EnemyType enemyRat = {
   .name = "Rat",
   .maxHp = 240.0f,

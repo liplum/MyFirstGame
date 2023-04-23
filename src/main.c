@@ -5,30 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdbool.h>
-#include "entity.h"
-#include "levels.h"
 #include "game.h"
+#include "console.h"
+#include "level/level_1.h"
+#include "level/level_2.h"
+#include "level/level_3.h"
 
-
-void alert() {
-  printf("\a");
-}
-
-const float shieldBashMul = 2.0f;
-const float shieldBashPenetrate = 0.5f;
-
-
-void showDeath() {
-  printf("\nYou failed...\n");
-  printf("\t\t***********\n");
-  printf("\t\t*Game Over*\n");
-  printf("\t\t***********\n");
-}
-
+#define LevelCount 3
 
 int main(void) {
-#ifndef __CLION__
+#ifdef __CLION__
   setvbuf(stdout, NULL, _IONBF, 0);
 #endif
   srand((unsigned) time(NULL));
@@ -38,37 +24,34 @@ int main(void) {
   printf("\t\t**********************\n");
   printf("\t\t\t\tLast Change: 4/23/2023    by Liplum\n");
 
-  end:
-  {
-    getchar();
+  const BattleRunner levels[LevelCount] = {
+    &slimeBattle,
+    &giantRatBattle,
+    &goblinMageBattle
+  };
 
-    if (isGameOver == 1) {
-      printf("You spent %d turns\n", turn);
-      printf("Press Enter to continue...");
-      getchar();
-      switch (part) { // Goto part
-        case 2:
-          goto part_rat;
-        case 3:
-          goto part_goblin;
+  for (int i = 0; i < LevelCount; ++i) {
+    BattleResult result = levels[i]();
+    switch (result) {
+      case BattleWin:
+        printf("Press Enter to continue...");
+        getchar();
+        continue;
+      case BattleLoss: {
+        clearScreen();
+        printf("\t\t***********\n");
+        printf("\t\t*Game Over*\n");
+        printf("\t\t***********\n");
+        return 0;
       }
-    } else {
-      // do nothing
     }
-    clearScreen();
-    printf("\t\t***********\n");
-    printf("\t\t*Game Over*\n");
-    printf("\t\t***********\n");
-    return 0;
   }
-  win:
-  {
-    getchar();
-    printf("*----*------*------*------*------*------*------*------*------*-----*");
-    printf("|              Congratulations! you passed the game.                |\n");
-    printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
-    printf("*-----*------*------*------*------*------*------*------*------*-----*");
-  }
+
+  getchar();
+  printf("*----*------*------*------*------*------*------*------*------*-----*");
+  printf("|              Congratulations! you passed the game.                |\n");
+  printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
+  printf("*-----*------*------*------*------*------*------*------*------*-----*");
 
   getchar();
   return 0;

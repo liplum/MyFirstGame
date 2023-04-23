@@ -4,9 +4,11 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "level_3.h"
 #include "../game.h"
 #include "../console.h"
+#include "level_2.h"
 
 BattleResult goblinMageBattle() {
   Player *player = createPlayer(&playerLv3);
@@ -14,7 +16,7 @@ BattleResult goblinMageBattle() {
   int turn = 0;
   int goblinSkillCounter = 0;
   clearScreen();
-  printf("Upgraded! Your level is %d now!\n", player.type->level);
+  printf("Upgraded! Your level is %d now!\n", player->type->level);
   printf("You learnt a new skill \"Offense To Defense\"!\n");
   printf("Description: Attack three times in a row will charge your next Parry to reduce 90%% damage.\n");
   getchar();
@@ -28,7 +30,7 @@ BattleResult goblinMageBattle() {
   printf("You have no choice but keep fighting!");
   getchar();
 
-  printf("Your Hp is %d. Goblin Mage Hp is %d.", (int) player.curHp, (int) enemy.curHp);
+  printf("Your Hp is %d. Goblin Mage Hp is %d.", (int) player->curHp, (int) enemy->curHp);
   getchar();
   // Skill 1:
   // Each round has a 20% chance to charge for two turns (it won't trigger itself during the charge),
@@ -51,18 +53,18 @@ BattleResult goblinMageBattle() {
     ActionType choice = getActionChoice();
     printf("\n");
     switch (choice) {
-      case ATTACK: {
+      case Attack: {
         bool isShieldBashTriggered;
         float goblinCaused;
         float playerCaused;
         // Check the skill "Shield Bash"
         if (shieldBashCounter >= 2) { // if trigger
-          enemy.armor *= 1.0f - shieldBashPenetrate;
-          playerCaused = calcDamageFor(player,enemy,player.type->attackPower * shieldBashMul);
-          enemy.armor = enemy.type->armor;
+          enemy->armor *= 1.0f - shieldBashPenetrate;
+          playerCaused = calcDamageFor(player, enemy, player->type->attackPower * shieldBashMul);
+          enemy->armor = enemy->type->armor;
           isShieldBashTriggered = true;
         } else { // if not trigger
-          playerCaused = calcDamageFor(player,enemy,player.type->attackPower);
+          playerCaused = calcDamageFor(player, enemy, player->type->attackPower);
           isShieldBashTriggered = false;
         }
 
@@ -73,24 +75,24 @@ BattleResult goblinMageBattle() {
             if (GRand == 0) { // Goblin starts charging
               goblinSkillCounter = 1;
               playerCaused *= 0.5f;
-              enemy.curHp -= playerCaused;
+              enemy->curHp -= playerCaused;
             } else { // Goblin won't charge
-              enemy.curHp -= playerCaused;
-              goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower);
-              player.curHp -= goblinCaused;
+              enemy->curHp -= playerCaused;
+              goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
+              player->curHp -= goblinCaused;
             }
           }
             break;
           case 1: { // Goblin is charging, already spent 1 turns
             playerCaused *= 0.5f;
-            enemy.curHp -= playerCaused;
+            enemy->curHp -= playerCaused;
             goblinSkillCounter += 1;
           }
             break;
           case 2: { // Goblin has charged up
-            enemy.curHp -= playerCaused;
-            goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower * goblinSkillDmgFactor);
-            player.curHp -= goblinCaused;
+            enemy->curHp -= playerCaused;
+            goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower * goblinSkillDmgFactor);
+            player->curHp -= goblinCaused;
             goblinSkillCounter = 0;
           }
             break;
@@ -99,8 +101,8 @@ BattleResult goblinMageBattle() {
         }
         // Reset skill 1
         shieldBashCounter = 0;
-        if (enemy.curHp > 0 && player.curHp > 0) { // Not yet killed
-          if (player.type->level >= 3) {
+        if (enemy->curHp > 0 && player->curHp > 0) { // Not yet killed
+          if (player->type->level >= 3) {
             playerSkill2Counter += 1;
           } // count the skill 2
           if (isShieldBashTriggered) {
@@ -135,7 +137,7 @@ BattleResult goblinMageBattle() {
           getchar();
           getchar();
           continue;
-        } else if (enemy.curHp <= 0) { // Killed
+        } else if (enemy->curHp <= 0) { // Killed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("You mustered up your courage and stabbed the goblin mage with a fatal blow\n");
           printf("Congratulations! You won the fight.\n");
@@ -159,10 +161,10 @@ BattleResult goblinMageBattle() {
           return BattleLoss;
         }
       }
-      case PARRY: {
+      case Parry: {
         bool thisTurnPlayerSkill2;
         bool thisTurnGoblinSkill;
-        player.armor *= 2;
+        player->armor *= 2;
         float goblinCaused;
         // Check goblin charging
         switch (goblinSkillCounter) {
@@ -173,14 +175,14 @@ BattleResult goblinMageBattle() {
               thisTurnGoblinSkill = false;
             } else { // Goblin won't charge
               // Check player skill "Offense To Defense"
-              if (playerSkill2Counter >= 3 && player.type->level >= 3) { // if trigger
-                goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower) * 0.1f;
+              if (playerSkill2Counter >= 3 && player->type->level >= 3) { // if trigger
+                goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower) * 0.1f;
                 thisTurnPlayerSkill2 = true;
               } else { // if not trigger
-                goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower) * 0.1f;
+                goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower) * 0.1f;
                 thisTurnPlayerSkill2 = false;
               }
-              player.curHp -= goblinCaused;
+              player->curHp -= goblinCaused;
               thisTurnGoblinSkill = false;
             }
           }
@@ -192,14 +194,14 @@ BattleResult goblinMageBattle() {
             break;
           case 2: { // Goblin has charged and prepare to release.
             // Check player skill "Offense To Defense"
-            goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower * goblinSkillDmgFactor);
+            goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower * goblinSkillDmgFactor);
             if (playerSkill2Counter >= 3) {
               goblinCaused *= 0.1f; // -90% damage
               thisTurnPlayerSkill2 = true;
             } else {
               thisTurnPlayerSkill2 = false;
             }
-            player.curHp -= goblinCaused;
+            player->curHp -= goblinCaused;
             goblinSkillCounter = 0;
             thisTurnGoblinSkill = true;
           }
@@ -208,7 +210,7 @@ BattleResult goblinMageBattle() {
             break;
         }
         playerSkill2Counter = 0;
-        if (player.curHp > 0) { //Not failed
+        if (player->curHp > 0) { //Not failed
           shieldBashCounter += 1;
           if (thisTurnPlayerSkill2) {
             printf("Your skill \"Offense To Defense\" is triggered.\n");
@@ -236,7 +238,7 @@ BattleResult goblinMageBattle() {
                      (int) goblinCaused);
             }
           }
-          player.armor = player.type->armor;
+          player->armor = player->type->armor;
           getchar();
           getchar();
           continue;
@@ -256,7 +258,7 @@ BattleResult goblinMageBattle() {
             printf("You couldn't resist such a powerful spell at all. You were wiped out in the flames...\n");
           }
           getchar();
-          goto die;
+          return BattleLoss;
         }
       }
       case Withdraw: {
@@ -273,8 +275,8 @@ BattleResult goblinMageBattle() {
               goblinSkillCounter = 1;
               thisTurnGoblinSkill = false;
             } else { // Goblin won't charge
-              goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower * 1.5f);
-              player.curHp -= goblinCaused;
+              goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
+              player->curHp -= goblinCaused;
               thisTurnGoblinSkill = true;
             }
             break;
@@ -285,8 +287,8 @@ BattleResult goblinMageBattle() {
             break;
           }
           case 2: { // Goblin has charged and prepare to release.
-            goblinCaused = calcDamageFor(enemy,player,enemy.type->attackPower * goblinSkillDmgFactor * 1.5f);
-            player.curHp -= goblinCaused;
+            goblinCaused = calcDamageFor(enemy, player, enemy->type->attackPower * goblinSkillDmgFactor * 1.5f);
+            player->curHp -= goblinCaused;
             goblinSkillCounter = 0;
             thisTurnGoblinSkill = true;
             break;
@@ -294,7 +296,7 @@ BattleResult goblinMageBattle() {
           default:
             break;
         }
-        if (player.curHp > 0) {
+        if (player->curHp > 0) {
           switch (goblinSkillCounter) {
             case 1:
               printf("The goblin mage is charging, and a magic barrier appears in front of them.\n");
@@ -320,7 +322,7 @@ BattleResult goblinMageBattle() {
           getchar();
           continue;
         }
-        if (player.curHp <= 0) {
+        if (player->curHp <= 0) {
           printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           if (thisTurnGoblinSkill) {
             printf("After the goblin mage has charged up, they cast the pyroblast, dealing %d damage.\n",
