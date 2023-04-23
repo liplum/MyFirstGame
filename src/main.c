@@ -10,30 +10,28 @@
 #define PARRY  2
 #define Withdraw  3
 
-struct Player {
+typedef struct {
   int curHp;
   int maxHp;
   int damage;
   int armor;
   int exp;
   int level;
-};
-struct Upgrade {
+} Player;
+
+typedef struct {
   int hp;
   int damage;
   int armor;
-};
-struct Enemy {
+} Upgrade;
+
+typedef struct {
   char *name;
   int curHp;
   int damage;
   int armor;
   int exp;
-};
-
-struct Upgrade createUpgrade(int hp, int dmg, int armor) {
-  return (struct Upgrade) {.hp = hp, .damage=dmg, .armor=armor};
-}
+} Enemy;
 
 int waving(int value);
 
@@ -49,12 +47,12 @@ void clearScreen() {
 int ending = 0, turn = 0, part = 1;
 
 
-struct Player player;
+Player player;
 
 float randomness = 0.1f;
-struct Enemy curEnemy;
+Enemy curEnemy;
 
-void playerAttributesUpgrade(struct Upgrade upgrade) {
+void playerAttributesUpgrade(Upgrade upgrade) {
   printf("\nYour max HP+%d, damage+%d, armor+%d.\n\n", upgrade.hp, upgrade.damage, upgrade.armor);
   player.maxHp += upgrade.hp;
   player.damage += upgrade.damage;
@@ -73,7 +71,7 @@ void newTurnStart() {
   printf("Your Hp is %d. The %s Hp is %d.\n", player.curHp, curEnemy.name, curEnemy.curHp);
 }
 
-void getChoice(int* choice){
+void getChoice(int *choice) {
   printf("Attack=1, Parry=2, Withdraw=3\n");
   printf("Your choice:");
   scanf("%d", choice);
@@ -85,7 +83,7 @@ void warning() {
 
 int main(void) {
   srand((unsigned) time(NULL));
-  player = (struct Player) {
+  player = (Player) {
     .maxHp = waving(150),
     .damage =waving(10),
     .armor=4,
@@ -104,7 +102,7 @@ int main(void) {
     ending = 0;
     printf("Press Enter to start.\n");
     getchar();
-    curEnemy = (struct Enemy) {
+    curEnemy = (Enemy) {
       .name = "Slime",
       .curHp = waving(50),
       .damage = waving(12),
@@ -207,7 +205,7 @@ int main(void) {
     part = 2;
     turn = 0;
     ending = 0;
-    curEnemy = (struct Enemy) {
+    curEnemy = (Enemy) {
       .name = "Rat",
       .curHp = waving(85),
       .damage = waving(17),
@@ -220,7 +218,11 @@ int main(void) {
       player.exp -= 100;
       printf("\nUpgraded! Your level is %d now!\n", player.level);
       getchar();
-      playerAttributesUpgrade(createUpgrade(80, 6, 8));
+      playerAttributesUpgrade((Upgrade) {
+        .hp=80,
+        .damage = 6,
+        .armor=8,
+      });
       getchar();
       printf("\nYou learnt a new skill \"Shield Bash\"!\n");
       printf(
@@ -389,7 +391,7 @@ int main(void) {
 
   part_goblin:
   {
-    curEnemy = (struct Enemy) {
+    curEnemy = (Enemy) {
       .name = "Goblin Mage",
       .curHp = waving(180),
       .damage = waving(20),
@@ -406,7 +408,11 @@ int main(void) {
       player.exp -= 300;
       printf("\nUpgraded! Your level is %d now!\n", player.level);
       getchar();
-      playerAttributesUpgrade(createUpgrade(150, 10, 10));
+      playerAttributesUpgrade((Upgrade) {
+        .hp = 150,
+        .damage = 10,
+        .armor = 10,
+      });
       getchar();
       printf("\nYou learnt a new skill \"Offense To Defense\"!\n");
       printf(
