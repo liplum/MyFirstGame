@@ -46,7 +46,6 @@ void clearScreen() {
 // Progress
 int ending = 0, turn = 0, part = 1;
 
-
 Player player;
 
 float randomness = 0.1f;
@@ -71,10 +70,12 @@ void newTurnStart() {
   printf("Your Hp is %d. The %s Hp is %d.\n", player.curHp, curEnemy.name, curEnemy.curHp);
 }
 
-void getChoice(int *choice) {
+int getChoice() {
+  int choice;
   printf("Attack=1, Parry=2, Withdraw=3\n");
   printf("Your choice:");
-  scanf("%d", choice);
+  scanf("%d", &choice);
+  return choice;
 }
 
 void warning() {
@@ -122,13 +123,12 @@ int main(void) {
 
     loop_slime:
     {
-      int actionChoice;
       int playerCaused;
       int slimeCaused;
       newTurnStart();
-      getChoice(&actionChoice);
+      int choice = getChoice();
       printf("\n");
-      switch (actionChoice) {
+      switch (choice) {
         case ATTACK: {
           playerCaused = waving(player.damage);
           curEnemy.curHp -= playerCaused;
@@ -246,15 +246,14 @@ int main(void) {
     int ratSkillCounter = 0;
     loop_rat:
     {
-      int actionChoice;
       int ratCaused;
       int playerCaused;
       int thisTurnRatSkill;
       int thisTurnPlayerSkill1;
       newTurnStart();
-      getChoice(&actionChoice);
+      int choice = getChoice();
       printf("\n");
-      switch (actionChoice) {
+      switch (choice) {
         case ATTACK: {
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.level == 2) {// if trigger
@@ -449,16 +448,15 @@ int main(void) {
     loop_goblin:
     {
       int GRand;
-      int actionChoice;
       int thisTurnPlayerSkill1;
       int thisTurnPlayerSkill2 = 0;
       int thisTurnGoblinSkill = 0;
       int goblinCaused = 0;
       int playerCaused;
       newTurnStart();
-      getChoice(&actionChoice);
+      int choice = getChoice();
       printf("\n");
-      switch (actionChoice) {
+      switch (choice) {
         case ATTACK: {
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.level >= 2) {
