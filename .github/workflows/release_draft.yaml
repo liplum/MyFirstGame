@@ -11,5 +11,11 @@ jobs:
     env:
       GH_REPO: ${{ github.repository }}
     steps:
-      - name: |
-          echo "just test"
+      - name: Download workflow artifact
+        uses: dawidd6/action-download-artifact@v2.27.0
+        with:
+          branch: master
+          workflow: build.yaml
+          workflow_conclusion: success
+      - run:
+          ls -a
