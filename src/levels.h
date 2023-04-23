@@ -7,11 +7,28 @@
 
 #include "entity.h"
 
-const PlayerType playerType = (PlayerType) {
+const PlayerType playerLv1 = (PlayerType) {
   .maxHp = 150.0f,
   .attack = 10.0f,
   .armor = 4.0f,
   .attackPower = 100,
+  .level = 1,
+};
+
+const PlayerType playerLv2 = (PlayerType) {
+  .maxHp = 150.0f,
+  .attack = 10.0f,
+  .armor = 4.0f,
+  .attackPower = 100,
+  .level = 2,
+};
+
+const PlayerType playerLv3 = (PlayerType) {
+  .maxHp = 150.0f,
+  .attack = 10.0f,
+  .armor = 4.0f,
+  .attackPower = 100,
+  .level = 3,
 };
 
 const EnemyType enemySlime = (EnemyType) {
@@ -19,7 +36,6 @@ const EnemyType enemySlime = (EnemyType) {
   .maxHp = 60.0f,
   .attack = 12.0f,
   .armor = 2.0f,
-  .expRewards = 200,
   .level = 1,
   .attackPower = 100,
 };
@@ -30,7 +46,6 @@ EnemyType enemyRat = (EnemyType) {
   .maxHp = 85.0f,
   .attack = 17.0f,
   .armor = 1.0f,
-  .expRewards = 300,
   .level = 2,
   .attackPower = 150,
 };
@@ -40,7 +55,6 @@ EnemyType enemyGoblinMage = (EnemyType) {
   .maxHp = 180.0f,
   .attack = 20.0f,
   .armor = 8,
-  .expRewards = 600,
   .level = 3,
   .attackPower = 120,
 };

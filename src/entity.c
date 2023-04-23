@@ -4,22 +4,21 @@
 
 #include "entity.h"
 
-Player createPlayer(PlayerInfo *info) {
-  float lv = (float) info->level;
+Player createPlayer(const PlayerType *type) {
   return (Player) {
-    .info=info,
-    .curHp = info->type->maxHp * (lv * 1.5f),
-    .attack = info->type->attack * (lv * 1.22f),
-    .armor = info->type->armor * (lv * 1.15f),
+    .info = type,
+    .curHp = type->maxHp,
+    .attack = type->attack,
+    .armor = type->armor,
   };
 }
 
 
-Enemy createEnemy(EnemyType *info) {
+Enemy createEnemy(const EnemyType *type) {
   return (Enemy) {
-    .info=info,
-    .curHp = info->maxHp,
-    .attack = info->attack,
-    .armor = info->armor,
+    .info = type,
+    .curHp = type->maxHp,
+    .attack = type->attack,
+    .armor = type->armor,
   };
 }

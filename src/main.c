@@ -84,31 +84,6 @@ void warning() {
   printf("\a");
 }
 
-void checkUpgrade() {
-  if (player.info->level == 1) {
-    if (player.info->exp >= 100) {
-      player.info->level += 1;
-      player.info->exp -= 100;
-      printf("Upgraded! Your level is %d now!\n", player.info->level);
-      getchar();
-      printf("You learnt a new skill \"Shield Bash\"!\n");
-      printf(
-        "Description: Parry twice in a row will charge your next attack with 300%% attack and pass through armor.\n");
-    }
-  } else if (player.info->level == 2) {
-    if (player.info->exp >= 300) {
-      player.info->level += 1;
-      player.info->exp -= 300;
-      printf("Upgraded! Your level is %d now!\n", player.info->level);
-      getchar();
-      printf("You learnt a new skill \"Offense To Defense\"!\n");
-      printf(
-        "Description: Attack three times in a row will charge your next parry to reduce 90%% attack.\n");
-    }
-  }
-}
-
-
 int main(void) {
 #ifndef __CLION__
   setvbuf(stdout, NULL, _IONBF, 0);
@@ -118,14 +93,9 @@ int main(void) {
   printf("         **********************\n");
   printf("         * First Game V 1.5.0 *\n");
   printf("         **********************       Last Change: 4/23/2023    by Liplum\n");
-  PlayerInfo playerInfo = (PlayerInfo) {
-    .type = &playerType,
-    .level = 1,
-    .exp = 0,
-  };
   part_slime:
   {
-    player = createPlayer(&playerInfo);
+    player = createPlayer(&playerLv1);
     curEnemy = createEnemy(&enemySlime);
     part = 1;
     turn = 0;
@@ -150,7 +120,7 @@ int main(void) {
       printf("\n");
       switch (choice) {
         case ATTACK: {
-          float playerCaused = calcPlayerDamage(playerType.attackPower);
+          float playerCaused = calcPlayerDamage(playerLv1.attackPower);
           curEnemy.curHp -= playerCaused;
           float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower);
           player.curHp -= slimeCaused;
@@ -177,7 +147,7 @@ int main(void) {
         case PARRY: {
           player.armor *= 2;
           float slimeCaused = calcEnemyDamage(curEnemy.info->attackPower);
-          player.armor = playerType.armor;
+          player.armor = playerLv1.armor;
           player.curHp -= slimeCaused;
           if (player.curHp > 0) {
             printf("You raised the shield and defended.\n");
@@ -217,13 +187,16 @@ int main(void) {
 
   part_rat:
   {
-    player = createPlayer(&playerInfo);
+    player = createPlayer(&playerLv2);
     curEnemy = createEnemy(&enemyRat);
     part = 2;
     turn = 0;
     isGameOver = false;
     clearScreen();
-    checkUpgrade();
+    printf("Upgraded! Your level is %d now!\n", player.info->level);
+    printf("You learnt a new skill \"Shield Bash\"!\n");
+    printf(
+      "Description: Parry twice in a row will charge your next attack with 300%% attack and pass through armor.\n");
     clearScreen();
     getchar();
     warning();
@@ -252,11 +225,11 @@ int main(void) {
           int thisTurnPlayerSkill1;
           // Check the skill "Shield Bash"
           if (playerSkill1Counter >= 2 && player.info->level == 2) {// if trigger
-            playerCaused = calcPlayerDamage(playerType.attackPower * 3);
+            playerCaused = calcPlayerDamage(playerLv1.attackPower * 3);
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 1;
           } else { // if not trigger
-            playerCaused = calcPlayerDamage(playerType.attackPower);
+            playerCaused = calcPlayerDamage(playerLv1.attackPower);
             playerSkill1Counter = 0;
             thisTurnPlayerSkill1 = 0;
           }
@@ -377,14 +350,17 @@ int main(void) {
 
   part_goblin:
   {
-    player = createPlayer(&playerInfo);
+    player = createPlayer(&playerLv3);
     curEnemy = createEnemy(&enemyGoblinMage);
     part = 3;
     turn = 0;
     isGameOver = false;
     int gSkillCounter = 0;
     clearScreen();
-    checkUpgrade();
+      printf("Upgraded! Your level is %d now!\n", player.info->level);
+      printf("You learnt a new skill \"Offense To Defense\"!\n");
+      printf(
+        "Description: Attack three times in a row will charge your next parry to reduce 90%% attack.\n");
     clearScreen();
     getchar();
     printf("\nYou continue to explore forward.\n");
@@ -732,15 +708,7 @@ int main(void) {
     getchar();
 
     if (isGameOver == 1) {
-      int expGain = curEnemy.info->expRewards - turn * 3;
-
-      if (expGain <= 0)
-        expGain = 0;
-
-      player.info->exp += expGain;
-
-      printf("You spent %d turns and gain %d exp!\n\n", turn, expGain);
-      printf("Now you have %d exp\n", player.info->exp);
+      printf("You spent %d turns\n", turn);
       printf("Press Enter to continue...");
       getchar();
       switch (part) { // Goto part
