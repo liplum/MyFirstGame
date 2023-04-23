@@ -13,7 +13,7 @@ typedef struct {
 } PlayerType;
 
 typedef struct {
-  PlayerType *type;
+  const PlayerType *type;
   int exp;
   int level;
 } PlayerInfo;
@@ -25,7 +25,7 @@ typedef struct {
   float armor;
 } Player;
 
-Player createPlayer(PlayerInfo *info);
+Player createPlayer(const PlayerInfo *info);
 
 typedef struct {
   char *name;
@@ -38,12 +38,12 @@ typedef struct {
 } EnemyType;
 
 typedef struct {
-  EnemyType *info;
+  const EnemyType *info;
   float curHp;
   float attack;
   float armor;
 } Enemy;
 
-Enemy createEnemy(EnemyType *info);
+Enemy createEnemy(const EnemyType *info);
 
 #endif //ENTITY_H

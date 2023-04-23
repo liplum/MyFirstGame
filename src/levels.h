@@ -7,14 +7,14 @@
 
 #include "entity.h"
 
-PlayerType playerType = (PlayerType) {
+const PlayerType playerType = (PlayerType) {
   .maxHp = 150.0f,
   .attack = 10.0f,
   .armor = 4.0f,
   .attackPower = 100,
 };
 
-EnemyType enemySlime = (EnemyType) {
+const EnemyType enemySlime = (EnemyType) {
   .name = "Slime",
   .maxHp = 60.0f,
   .attack = 12.0f,
