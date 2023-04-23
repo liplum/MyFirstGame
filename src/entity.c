@@ -2,7 +2,7 @@
 // Created by Liplum on 4/23/2023.
 //
 
-#include <malloc.h>
+#include <stdlib.h>
 #include "entity.h"
 
 Player *createPlayer(const PlayerType *type) {
