@@ -99,7 +99,7 @@ BattleResult slimeBattle() {
         }
         printf("Slime stuck your legs.\n");
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
-        player->curHp -= enemy->attack;
+        player->curHp -= slimeCaused;
         if (player->curHp <= 0) {
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("Slime caught you and consumed your body. How poor you are!\n");
