@@ -47,7 +47,7 @@ char *createHealthBar(float curHp, float maxHp, int barWidth) {
   return healthBar;
 }
 
-const int healthBarWidth = 15;
+const int healthBarWidth = 18;
 
 void displayNewTurnBanner(Player *player, Enemy *enemy, int turn) {
 #if !defined(__CLION__)

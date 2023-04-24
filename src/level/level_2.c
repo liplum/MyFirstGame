@@ -29,6 +29,10 @@ const EnemyType enemyRat = {
 const float shieldBashMul = 2.0f;
 const float shieldBashPenetrate = 0.5f;
 
+void displayShieldBashCounter(int counter) {
+  printf("[Shield Bash | %d]\n", counter);
+}
+
 BattleResult giantRatBattle() {
   Player *player = createPlayer(&playerLv2);
   Enemy *enemy = createEnemy(&enemyRat);
@@ -51,30 +55,32 @@ BattleResult giantRatBattle() {
   // Skill: Whenever rat attacks twice in a row,
   // the third Attack will be a critical strike (this Attack does not count as two consecutive attacks),
   // causing double Attack.
-  int shieldBashCounter = 0;
+  int parryCounter = 0;
   int ratAttackCounter = 0;
   while (true) {
     turn++;
     displayNewTurnBanner(player, enemy, turn);
+    displayShieldBashCounter(parryCounter);
+    printf("\n");
     ActionType choice = getActionChoice();
     printf("\n");
     const int _ratAttackCounter = ratAttackCounter;
-    const int _shieldBashCounter = shieldBashCounter;
+    const int _parryCounter = parryCounter;
     switch (choice) {
       case Attack: {
         // update counter
-        shieldBashCounter = 0;
+        parryCounter = 0;
         float ratCaused;
         float playerCaused;
         // Check the skill "Shield Bash"
-        if (_shieldBashCounter >= 2) {// if trigger
+        if (_parryCounter >= 2) {// if trigger
           enemy->armor *= 1.0f - shieldBashPenetrate;
           playerCaused = calcDamageFor(player, enemy, player->type->attackPower * shieldBashMul);
           enemy->armor = enemy->type->armor;
-          shieldBashCounter = 0;
+          parryCounter = 0;
         } else { // if not trigger
           playerCaused = calcDamageFor(player, enemy, player->type->attackPower);
-          shieldBashCounter = 0;
+          parryCounter = 0;
         }
         enemy->curHp -= playerCaused;
         // Check rat's skill
@@ -88,7 +94,7 @@ BattleResult giantRatBattle() {
         player->curHp -= ratCaused;
         if (enemy->curHp <= 0) {  //Killed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-          if (_shieldBashCounter >= 2) {
+          if (_parryCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
           printf("You made a critical strike on the rat!\n");
@@ -98,11 +104,11 @@ BattleResult giantRatBattle() {
         }
         if (player->curHp <= 0) { //Failed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-          if (_shieldBashCounter >= 2) {
+          if (_parryCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
           printf("You hit the rat and cause %d damage.\n", (int) playerCaused);
-          if (_shieldBashCounter >= 2) {
+          if (_parryCounter >= 2) {
             printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
           }
           printf("The giant rat suddenly hit you with a fatal blow!\n");
@@ -110,7 +116,7 @@ BattleResult giantRatBattle() {
           return BattleLoss;
         }
         //Not yet killed
-        if (_shieldBashCounter >= 2) {
+        if (_parryCounter >= 2) {
           printf("Your skill \"Shield Bash\" is triggered.\n");
         }
         printf("You hit the rat and cause %d damage.\n", (int) playerCaused);
@@ -124,7 +130,7 @@ BattleResult giantRatBattle() {
       }
       case Parry: {
         // update counter
-        shieldBashCounter += 1;
+        parryCounter += 1;
         float ratCaused;
         player->armor *= 2;
         // Check rat's skill
@@ -161,7 +167,7 @@ BattleResult giantRatBattle() {
           return BattleEscape;
         }
         // update counter
-        shieldBashCounter = 0;
+        parryCounter = 0;
         printf("The giant rat bit your shoulder. You can't not move!\n");
         float ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
         player->curHp -= ratCaused;
@@ -180,3 +186,4 @@ BattleResult giantRatBattle() {
     }
   }
 }
+

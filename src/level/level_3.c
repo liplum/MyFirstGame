@@ -27,6 +27,10 @@ const EnemyType enemyGoblinMage = {
 };
 const float offense2DefenseResistance = 0.5f;
 
+void displayOffense2DefenseCounter(int counter) {
+  printf("[Offense To Defense | %d]", counter);
+}
+
 BattleResult goblinMageBattle() {
   Player *player = createPlayer(&playerLv3);
   Enemy *enemy = createEnemy(&enemyGoblinMage);
@@ -66,6 +70,9 @@ BattleResult goblinMageBattle() {
   while (true) {
     turn++;
     displayNewTurnBanner(player, enemy, turn);
+    displayShieldBashCounter(parryCounter);
+    displayOffense2DefenseCounter(attackCounter);
+    printf("\n");
     ActionType choice = getActionChoice();
     printf("\n");
     const int _goblinChargeCounter = goblinChargeCounter;
@@ -117,7 +124,7 @@ BattleResult goblinMageBattle() {
         parryCounter = 0;
         if (enemy->curHp <= 0) { // Killed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-          printf("You mustered up your courage and stabbed the goblin mage with a fatal blow\n");
+          printf("You mustered up your courage and stabbed the goblin mage with a fatal blow.\n");
           printf("Congratulations! You won the fight.\n");
           getchar();
           return BattleWin;

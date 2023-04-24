@@ -13,4 +13,6 @@ extern const float shieldBashPenetrate;
 
 BattleResult giantRatBattle();
 
+void displayShieldBashCounter(int counter);
+
 #endif //LEVEL_2_H

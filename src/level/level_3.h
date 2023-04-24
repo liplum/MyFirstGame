@@ -15,4 +15,6 @@ extern const float offense2DefenseResistance;
 
 BattleResult goblinMageBattle();
 
+void displayOffense2DefenseCounter(int counter);
+
 #endif //LEVEL_3_H
