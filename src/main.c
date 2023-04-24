@@ -39,6 +39,14 @@ int main(void) {
         getchar();
         continue;
       }
+      case BattleEscape: {
+        getchar();
+        printf("*----*------*------*------*------*-------*\n");
+        printf("|       You Escaped from the Forest      |\n");
+        printf("|         That's the right way.          |\n");
+        printf("*-----*------*------*------*------*------*\n");
+        return 0;
+      }
       case BattleLoss: {
         getchar();
         printf("*----*------*------*------*------*-------*\n");
@@ -54,8 +62,6 @@ int main(void) {
   printf("|              Congratulations! you passed the game.                |\n");
   printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
   printf("*-----*------*------*------*------*------*------*------*------*-----*");
-  getchar();
-  getchar();
   return 0;
 }
 

@@ -260,6 +260,9 @@ BattleResult goblinMageBattle() {
         continue;
       }
       case Withdraw: {
+        if (randf() <= escapeChance) {
+          return BattleEscape;
+        }
         // update counter
         parryCounter = 0;
         attackCounter = 0;

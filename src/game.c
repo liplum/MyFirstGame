@@ -7,6 +7,8 @@
 #include "console.h"
 #include "calculate.h"
 
+const float escapeChance = 0.01f;
+
 ActionType getActionChoice() {
   ActionType choice = 0;
   printf("Attack=1, Parry=2, Withdraw=3\n");

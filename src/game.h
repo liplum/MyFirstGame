@@ -10,7 +10,10 @@
 typedef enum {
   BattleWin,
   BattleLoss,
+  BattleEscape,
 } BattleResult;
+
+extern const float escapeChance;
 
 typedef BattleResult (*BattleRunner)();
 

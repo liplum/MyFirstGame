@@ -7,6 +7,7 @@
 #include "../game.h"
 #include "level_2.h"
 #include "../console.h"
+#include "../calculate.h"
 
 const PlayerType playerLv2 = {
   .maxHp = 190.0f,
@@ -156,6 +157,9 @@ BattleResult giantRatBattle() {
         continue;
       }
       case Withdraw: {
+        if (randf() <= escapeChance) {
+          return BattleEscape;
+        }
         // update counter
         shieldBashCounter = 0;
         printf("The giant rat bit your shoulder. You can't not move!\n");

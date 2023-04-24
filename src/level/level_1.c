@@ -7,6 +7,7 @@
 #include "../game.h"
 #include "../console.h"
 #include "level_1.h"
+#include "../calculate.h"
 
 const PlayerType playerLv1 = {
   .maxHp = 130.0f,
@@ -93,6 +94,9 @@ BattleResult slimeBattle() {
         continue;
       }
       case Withdraw: {
+        if (randf() <= escapeChance) {
+          return BattleEscape;
+        }
         printf("Slime stuck your legs.\n");
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
         player->curHp -= enemy->attack;
