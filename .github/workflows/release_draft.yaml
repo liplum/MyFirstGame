@@ -23,10 +23,8 @@ jobs:
           mkdir dist
           # Extract MyFirstGame from Linux (x64)
           cp download/"Linux (x64)"/MyFirstGame dist/MyFirstGame-Linux-x64
-          # Extract MyFirstGame from Mac (arm64)
-          cp download/"Mac (arm64)"/MyFirstGame dist/MyFirstGame-macOS-arm64
-          # Extract MyFirstGame from Mac (x64)
-          cp download/"Mac (x64)"/MyFirstGame dist/MyFirstGame-macOS-x64
+          # Extract MyFirstGame from Mac
+          cp download/"MacOS (Universal)"/MyFirstGame dist/MyFirstGame-macOS-universal
           # Extract MyFirstGame.exe from Windows (x64)/Release
           cp download/"Windows (x64)"/Release/MyFirstGame.exe dist/MyFirstGame-Windows-x64.exe
 
