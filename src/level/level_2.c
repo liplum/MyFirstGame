@@ -93,7 +93,7 @@ BattleResult giantRatBattle() {
         }
         player->curHp -= ratCaused;
         if (enemy->curHp <= 0) {  //Killed
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           if (_parryCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
@@ -103,7 +103,7 @@ BattleResult giantRatBattle() {
           return BattleWin;
         }
         if (player->curHp <= 0) { //Failed
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           if (_parryCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
           }
@@ -143,7 +143,7 @@ BattleResult giantRatBattle() {
         }
         player->curHp -= ratCaused;
         if (player->curHp <= 0) {
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("You raised the shield and tried to defend.\n");
           if (_ratAttackCounter >= 2) {
             printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
@@ -172,7 +172,7 @@ BattleResult giantRatBattle() {
         float ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
         player->curHp -= ratCaused;
         if (player->curHp <= 0) {
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("You were held by the giant rat, and it bit off your neck!\n");
           getchar();
           return BattleLoss;

@@ -11,6 +11,10 @@
 
 const float escapeChance = 0.01f;
 
+void displaySeparatorLine() {
+  printf("*------*------*------*------*------*-------*\n");
+}
+
 ActionType getActionChoice() {
   ActionType choice = 0;
   printf("Attack=1, Parry=2, Withdraw=3\n");
@@ -53,7 +57,7 @@ void displayNewTurnBanner(Player *player, Enemy *enemy, int turn) {
 #if !defined(__CLION__)
   clearScreen();
 #endif
-  printf("------------------------------------------------------------\n");
+  displaySeparatorLine();
   printf("[Turn %d]\n", turn);
   printf("Your HP:\n");
   printf("\t|%s| %d.\n", createHealthBar(player->curHp, player->type->maxHp, healthBarWidth), (int) player->curHp);

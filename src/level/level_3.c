@@ -123,14 +123,14 @@ BattleResult goblinMageBattle() {
         enemy->curHp -= playerCaused;
         parryCounter = 0;
         if (enemy->curHp <= 0) { // Killed
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("You mustered up your courage and stabbed the goblin mage with a fatal blow.\n");
           printf("Congratulations! You won the fight.\n");
           getchar();
           return BattleWin;
         }
         if (player->curHp <= 0) { // Failed
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("You hit the goblin and cause %d damage.\n",
                  (int) playerCaused);
           if (_goblinChargeCounter == 2) {
@@ -218,7 +218,7 @@ BattleResult goblinMageBattle() {
         }
         player->curHp -= goblinCaused;
         if (player->curHp <= 0) { // Failed
-          printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           if (_attackCounter >= 3) {
             printf("Your skill \"Offense To Defense\" is triggered.\n");
           }
@@ -302,7 +302,7 @@ BattleResult goblinMageBattle() {
         }
         player->curHp -= goblinCaused;
         if (player->curHp <= 0) {
-          printf("\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           if (_goblinChargeCounter == 2) {
             printf("After the goblin mage has charged up, they cast the pyroblast, dealing %d damage.\n",
                    (int) goblinCaused);

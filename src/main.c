@@ -19,10 +19,10 @@ int main(void) {
 #endif
   srand((unsigned) time(NULL));
   clearScreen();
-  printf("\t\t**********************\n");
-  printf("\t\t* First Game v1.5.0  *\n");
-  printf("\t\t**********************\n");
-  printf("\t\t\t\tLast Change: 4/24/2023    by Liplum\n");
+  printf("\t\t*------*------*------*------*------*-------*\n");
+  printf("\t\t|          My First Game v1.5.1            |\n");
+  printf("\t\t|    Last Change: 4/25/2023    by Liplum   |\n");
+  printf("\t\t*------*------*------*------*------*------*\n");
 
   const BattleRunner levels[LevelCount] = {
     &slimeBattle,
@@ -41,27 +41,27 @@ int main(void) {
       }
       case BattleEscape: {
         getchar();
-        printf("*----*------*------*------*------*-------*\n");
-        printf("|       You Escaped from the Forest      |\n");
-        printf("|         That's the right way.          |\n");
-        printf("*-----*------*------*------*------*------*\n");
+        printf("*------*------*------*------*------*-------*\n");
+        printf("|        You Escaped from the Forest       |\n");
+        printf("|          That's the right way.           |\n");
+        printf("*------*------*------*------*------*------*\n");
         return 0;
       }
       case BattleLoss: {
         getchar();
-        printf("*----*------*------*------*------*-------*\n");
-        printf("|             Game Over                  |\n");
-        printf("|       Don't be sad, just try again.    |\n");
-        printf("*-----*------*------*------*------*------*\n");
+        printf("*------*------*------*------*------*-------*\n");
+        printf("|              Game Over                   |\n");
+        printf("|        Don't be sad, just try again.     |\n");
+        printf("*------*------*------*------*------*------*\n");
         return 0;
       }
     }
   }
 
-  printf("*----*------*------*------*------*------*------*------*------*------*\n");
-  printf("|              Congratulations! you passed the game.                |\n");
-  printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
-  printf("*-----*------*------*------*------*------*------*------*------*-----*");
+  printf("*------*------*------*------*------*------*------*------*------*------*\n");
+  printf("|               Congratulations! you passed the game.                 |\n");
+  printf("|        Thank you for playing, please wait for my next work! UwU     |\n");
+  printf("*------*------*------*------*------*------*------*------*------*-----*");
   return 0;
 }
 

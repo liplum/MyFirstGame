@@ -27,6 +27,8 @@ ActionType getActionChoice();
 
 void displayNewTurnBanner(Player *player, Enemy *enemy, int turn);
 
+void displaySeparatorLine();
+
 float calcDamage(int aLv, float aAttack, float aPower, float bArmor);
 
 #define calcDamageFor(a, b, power) (calcDamage(a->type->level, a->attack, power, b->armor))

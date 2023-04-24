@@ -55,13 +55,13 @@ BattleResult slimeBattle() {
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
         player->curHp -= slimeCaused;
         if (enemy->curHp <= 0) { //Killed
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("A critical strike is performed!\n");
           printf("Congratulations! You won the fight.\n");
           return BattleWin;
         }
         if (player->curHp <= 0) { //Failed
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("You slashed the enemy and cause %d damage!\n", (int) playerCaused);
           printf("Slime rushed swiftly and consumed you!\n");
           getchar();
@@ -80,7 +80,7 @@ BattleResult slimeBattle() {
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
         player->curHp -= slimeCaused;
         if (player->curHp <= 0) {
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("You raised the shield and tried to defend.\n");
           printf("But enemy countered your defense...\n");
           getchar();
@@ -101,7 +101,7 @@ BattleResult slimeBattle() {
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
         player->curHp -= slimeCaused;
         if (player->curHp <= 0) {
-          printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+          displaySeparatorLine();
           printf("Slime caught you and consumed your body. How poor you are!\n");
           getchar();
           return BattleLoss;
