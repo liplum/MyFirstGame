@@ -11,6 +11,8 @@ extern const PlayerType playerLv3;
 
 extern const EnemyType enemyGoblinMage;
 
+extern const float offense2DefenseResistance;
+
 BattleResult goblinMageBattle();
 
 #endif //LEVEL_3_H

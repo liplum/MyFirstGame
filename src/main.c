@@ -50,7 +50,7 @@ int main(void) {
     }
   }
 
-  printf("*----*------*------*------*------*------*------*------*------*-----*");
+  printf("*----*------*------*------*------*------*------*------*------*------*\n");
   printf("|              Congratulations! you passed the game.                |\n");
   printf("|       Thank you for playing, please wait for my next work! UwU    |\n");
   printf("*-----*------*------*------*------*------*------*------*------*-----*");
