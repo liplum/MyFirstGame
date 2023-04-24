@@ -33,8 +33,8 @@ BattleResult slimeBattle() {
   getchar();
   printf("You were found in a forest.");
   getchar();
-  alert();
   printf("A slime is coming here...");
+  alert();
   getchar();
   printf("Start fighting!");
   getchar();
@@ -53,18 +53,13 @@ BattleResult slimeBattle() {
         enemy->curHp -= playerCaused;
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
         player->curHp -= slimeCaused;
-        if (enemy->curHp > 0 && player->curHp > 0) { //Not yet killed
-          printf("You slashed the enemy and cause %d damage!\n", (int) playerCaused);
-          printf("Slime hit you and caused %d damage!\n", (int) slimeCaused);
-          getchar();
-          getchar();
-          continue;
-        } else if (enemy->curHp <= 0) { //Killed
+        if (enemy->curHp <= 0) { //Killed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("A critical strike is performed!\n");
           printf("Congratulations! You won the fight.\n");
           return BattleWin;
-        } else { //Failed
+        }
+        if (player->curHp <= 0) { //Failed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("You slashed the enemy and cause %d damage!\n", (int) playerCaused);
           printf("Slime rushed swiftly and consumed you!\n");
@@ -72,41 +67,45 @@ BattleResult slimeBattle() {
           getchar();
           return BattleLoss;
         }
+        //Not yet killed
+        printf("You slashed the enemy and cause %d damage!\n", (int) playerCaused);
+        printf("Slime hit you and caused %d damage!\n", (int) slimeCaused);
+        getchar();
+        getchar();
+        continue;
       }
       case Parry: {
         player->armor *= 2;
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower);
         player->curHp -= slimeCaused;
-        if (player->curHp > 0) {
-          printf("You raised the shield and defended.\n");
-          printf("Slime hit you and cause %d!\n", (int) slimeCaused);
-          getchar();
-          getchar();
-          player->armor = player->type->armor;
-          continue;
-        } else {
+        if (player->curHp <= 0) {
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("You raised the shield and tried to defend.\n");
           printf("But enemy countered your defense...\n");
           getchar();
           return BattleLoss;
         }
+        printf("You raised the shield and defended.\n");
+        printf("Slime hit you and cause %d!\n", (int) slimeCaused);
+        getchar();
+        getchar();
+        player->armor = player->type->armor;
+        continue;
       }
       case Withdraw: {
         printf("Slime stuck your legs.\n");
         float slimeCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
         player->curHp -= enemy->attack;
-        if (player->curHp > 0) {
-          printf("You were distracted and caught by slimes. You lost %d damage.\n", (int) slimeCaused);
-          getchar();
-          getchar();
-          continue;
-        } else {
+        if (player->curHp <= 0) {
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("Slime caught you and consumed your body. How poor you are!\n");
           getchar();
           return BattleLoss;
         }
+        printf("You were distracted and caught by slimes. You lost %d damage.\n", (int) slimeCaused);
+        getchar();
+        getchar();
+        continue;
       }
     }
   }

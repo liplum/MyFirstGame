@@ -36,10 +36,11 @@ BattleResult giantRatBattle() {
   printf("Upgraded! You are level %d now!\n", player->type->level);
   printf("You learnt a new skill \"Shield Bash\"!\n");
   printf(
-    "Description: Parry twice in a row will charge your next Attack with 200%% damage and penetrate 50%% armor.\n");
+    "Description: Parry twice in a row will charge your next attack with 200%% damage and penetrate 50%% armor.\n");
   getchar();
   alert();
   printf("A giant rat followed closely.");
+  alert();
   getchar();
   printf("You have to fight again!");
   getchar();
@@ -60,6 +61,8 @@ BattleResult giantRatBattle() {
     const int _shieldBashCounter = shieldBashCounter;
     switch (choice) {
       case Attack: {
+        // update counter
+        shieldBashCounter = 0;
         float ratCaused;
         float playerCaused;
         // Check the skill "Shield Bash"
@@ -82,19 +85,7 @@ BattleResult giantRatBattle() {
           ratAttackCounter++;
         }
         player->curHp -= ratCaused;
-        if (enemy->curHp > 0 && player->curHp > 0) { //Not yet killed
-          if (_shieldBashCounter >= 2) {
-            printf("Your skill \"Shield Bash\" is triggered.\n");
-          }
-          printf("You hit the rat and cause %d damage.\n\n", (int) playerCaused);
-          if (_ratAttackCounter >= 2) {
-            printf("The Giant rat has attacked twice in a row, and this time it is full of energy!\n");
-          }
-          printf("The Giant rat bit you heavily and caused %d damage.\n", (int) ratCaused);
-          getchar();
-          getchar();
-          continue;
-        } else if (enemy->curHp <= 0) {  //Killed
+        if (enemy->curHp <= 0) {  //Killed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           if (_shieldBashCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
@@ -103,7 +94,8 @@ BattleResult giantRatBattle() {
           printf("Congratulations! You won the fight.\n");
           getchar();
           return BattleWin;
-        } else { //Failed
+        }
+        if (player->curHp <= 0) { //Failed
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           if (_shieldBashCounter >= 2) {
             printf("Your skill \"Shield Bash\" is triggered.\n");
@@ -116,8 +108,22 @@ BattleResult giantRatBattle() {
           getchar();
           return BattleLoss;
         }
+        //Not yet killed
+        if (_shieldBashCounter >= 2) {
+          printf("Your skill \"Shield Bash\" is triggered.\n");
+        }
+        printf("You hit the rat and cause %d damage.\n", (int) playerCaused);
+        if (_ratAttackCounter >= 2) {
+          printf("The Giant rat has attacked twice in a row, and this time it is full of energy!\n");
+        }
+        printf("The Giant rat bit you heavily and caused %d damage.\n", (int) ratCaused);
+        getchar();
+        getchar();
+        continue;
       }
       case Parry: {
+        // update counter
+        shieldBashCounter += 1;
         float ratCaused;
         player->armor *= 2;
         // Check rat's skill
@@ -129,18 +135,7 @@ BattleResult giantRatBattle() {
           ratAttackCounter++;
         }
         player->curHp -= ratCaused;
-        if (player->curHp > 0) {
-          shieldBashCounter += 1;
-          printf("You raised the shield and defended.\n");
-          if (_ratAttackCounter >= 2) {
-            printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
-          }
-          printf("The giant Rat bit you heavily and caused %d damage.\n", (int) ratCaused);
-          player->armor = player->type->armor;
-          getchar();
-          getchar();
-          continue;
-        } else {
+        if (player->curHp <= 0) {
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("You raised the shield and tried to defend.\n");
           if (_ratAttackCounter >= 2) {
@@ -150,23 +145,33 @@ BattleResult giantRatBattle() {
           getchar();
           return BattleLoss;
         }
+        printf("You raised the shield and defended.\n");
+        if (_ratAttackCounter >= 2) {
+          printf("The giant rat has attacked twice in a row, and this time it is full of energy!\n");
+        }
+        printf("The giant Rat bit you heavily and caused %d damage.\n", (int) ratCaused);
+        player->armor = player->type->armor;
+        getchar();
+        getchar();
+        continue;
       }
       case Withdraw: {
+        // update counter
+        shieldBashCounter = 0;
         printf("The giant rat bit your shoulder. You can't not move!\n");
         float ratCaused = calcDamageFor(enemy, player, enemy->type->attackPower * 1.5f);
         player->curHp -= ratCaused;
-        if (player->curHp > 0) {
-          printf("You were controlled by a giant rat, and it bit at your neck causing %d damage!\n",
-                 (int) ratCaused);
-          getchar();
-          getchar();
-          continue;
-        } else {
+        if (player->curHp <= 0) {
           printf("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
           printf("You were held by the giant rat, and it bit off your neck!\n");
           getchar();
           return BattleLoss;
         }
+        printf("You were controlled by a giant rat, and it bit at your neck causing %d damage!\n",
+               (int) ratCaused);
+        getchar();
+        getchar();
+        continue;
       }
     }
   }

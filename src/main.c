@@ -22,7 +22,7 @@ int main(void) {
   printf("\t\t**********************\n");
   printf("\t\t* First Game v1.5.0  *\n");
   printf("\t\t**********************\n");
-  printf("\t\t\t\tLast Change: 4/23/2023    by Liplum\n");
+  printf("\t\t\t\tLast Change: 4/24/2023    by Liplum\n");
 
   const BattleRunner levels[LevelCount] = {
     &slimeBattle,

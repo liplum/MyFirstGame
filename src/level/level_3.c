@@ -34,12 +34,13 @@ BattleResult goblinMageBattle() {
   clearScreen();
   printf("Upgraded! You are level %d now!\n", player->type->level);
   printf("You learnt a new skill \"Offense To Defense\"!\n");
-  printf("Description: Attack three times in a row will charge your next Parry to reduce 50%% damage.\n");
+  printf("Description: Attack three times in a row will charge your next parry to reduce 50%% damage.\n");
   getchar();
   printf("You continue to explore forward.");
   getchar();
   alert();
   printf("A goblin mage with a staff suddenly jumped out.");
+  alert();
   getchar();
   printf("You have no choice but keep fighting!");
   getchar();
@@ -47,9 +48,9 @@ BattleResult goblinMageBattle() {
   printf("Your Hp is %d. Goblin Mage Hp is %d.", (int) player->curHp, (int) enemy->curHp);
   getchar();
   // Skill 1:
-  // Each round has a 20% chance to charge for two turns (it won't trigger itself during the charge),
-  // and release a spell barrier that can resist 50% of oncoming Attack,
-  // deal 220% damage and break 50% of armor on the next Attack.
+  // Each round has a 50% chance to charge for two turns (it won't trigger itself during the charge),
+  // and release a magic barrier that can resist 50% of oncoming damage,
+  // cast 500% power spell on the next attack when charging up.
 
   // Skill 2: TODO: Finish this skill
   // After being attacked for three times in a row,
@@ -61,6 +62,7 @@ BattleResult goblinMageBattle() {
   int goblinChargeCounter = -1;
   const float goblinSkillTriggerChance = 0.5f;
   const float goblinSkillDmgFactor = 5.0f;
+  const float goblinBarrierResistance = 0.5f;
   while (true) {
     turn++;
     displayNewTurnBanner(player, enemy, turn);
@@ -95,12 +97,12 @@ BattleResult goblinMageBattle() {
           }
             break;
           case 0: { // Goblin is charging at 1st turn.
-            playerCaused *= 0.5f;
+            playerCaused *= 1.0f - goblinBarrierResistance;
             goblinChargeCounter = 1;
           }
             break;
           case 1: { // Goblin is still charging at 2nd turn.
-            playerCaused *= 0.5f;
+            playerCaused *= 1.0f - goblinBarrierResistance;
             goblinChargeCounter = 2;
           }
             break;
