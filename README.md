@@ -1,4 +1,3 @@
-<div align="center">
 
 # My First Game
 
@@ -10,32 +9,19 @@
 
 ### Update History
 
-#### [v1.5] *4/24/2023*
+- [v1.5.1] *4/25/2023*: Skill counter and unified UI. Bug fix.
 
-The game sources are split into multiple files.
+- [v1.5] *4/24/2023*: The game sources are split into multiple files.
 Balancing.
+- [v1.4] *10/30/2022*: Renamed the variables and extracted structures. Build this game with CMake.
 
-#### [v1.4] *10/30/2022*
+- [v1.3.3] *2/11/2019*: I can't remember what I did in this update.
 
-Renamed the variables and extracted structures.
-
-Build this game with CMake.
-
-#### [v1.3.3] *2/11/2019*
-
-I can't remember what I did in this update.
-
-
-#### [v1.0.1] *2/9/2019*
-
-Slime was added to the game.
-
+- [v1.0.1] *2/9/2019*: Slime was added to the game.
 
 ### Tutorial
 
 [Clion with CMake](https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html)
-</div>
-
 
 <!----------------------------------------------------------------------------->
 
