@@ -10,6 +10,11 @@
 
 ### Update History
 
+#### [v1.5] *4/24/2023*
+
+The game sources are split into multiple files.
+Balancing.
+
 #### [v1.4] *10/30/2022*
 
 Renamed the variables and extracted structures.
