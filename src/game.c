@@ -3,6 +3,8 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "game.h"
 #include "console.h"
 #include "calculate.h"
@@ -19,13 +21,44 @@ ActionType getActionChoice() {
   return choice;
 }
 
+// Create a health bar string based on the current and maximum health points
+char *createHealthBar(float curHp, float maxHp, int barWidth) {
+  // Calculate the percentage of remaining health points
+  float percent = curHp / maxHp;
+
+  // Calculate the number of characters to fill in the bar
+  int numFilledChars = (int) (percent * (float) barWidth);
+  numFilledChars = numFilledChars < 1 ? 1 : numFilledChars;
+
+  // Allocate memory for the health bar string
+  char *healthBar = (char *) malloc(sizeof(char) * (barWidth + 1));
+
+  // Fill the health bar string with spaces
+  memset(healthBar, ' ', barWidth);
+
+  // Fill in the filled characters with '='
+  for (int i = 0; i < numFilledChars; i++) {
+    healthBar[i] = '=';
+  }
+  healthBar[numFilledChars - 1] = '>';
+  // Add null terminator at the end
+  healthBar[barWidth] = '\0';
+
+  return healthBar;
+}
+
+const int healthBarWidth = 15;
+
 void displayNewTurnBanner(Player *player, Enemy *enemy, int turn) {
 #if !defined(__CLION__)
   clearScreen();
 #endif
   printf("------------------------------------------------------------\n");
-  printf("[Turn %d]\n\n", turn);
-  printf("Your Hp is %d. The %s Hp is %d.\n", (int) player->curHp, enemy->type->name, (int) enemy->curHp);
+  printf("[Turn %d]\n", turn);
+  printf("Your HP:\n");
+  printf("\t|%s| %d.\n", createHealthBar(player->curHp, player->type->maxHp, healthBarWidth), (int) player->curHp);
+  printf("%s Hp:\n", enemy->type->name);
+  printf("\t|%s| %d.\n", createHealthBar(enemy->curHp, enemy->type->maxHp, healthBarWidth), (int) enemy->curHp);
 }
 
 float calcDamage(int aLv, float aAttack, float aPower, float bArmor) {
