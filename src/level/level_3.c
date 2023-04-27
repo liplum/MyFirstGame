@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "level_3.h"
 #include "../console.h"
 #include "level_2.h"
@@ -127,6 +128,8 @@ BattleResult goblinMageBattle() {
           printf("You mustered up your courage and stabbed the goblin mage with a fatal blow.\n");
           printf("Congratulations! You won the fight.\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleWin;
         }
         if (player->curHp <= 0) { // Failed
@@ -144,6 +147,8 @@ BattleResult goblinMageBattle() {
             printf("You can't resist such terrifying power at all and evaporated in the flame...\n");
           }
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         // Not yet killed
@@ -233,6 +238,8 @@ BattleResult goblinMageBattle() {
             printf("You couldn't resist such a powerful spell at all. You were wiped out in the flames...\n");
           }
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         //Not failed
@@ -268,6 +275,8 @@ BattleResult goblinMageBattle() {
       }
       case Withdraw: {
         if (randf() <= escapeChance) {
+          free(player);
+          free(enemy);
           return BattleEscape;
         }
         // update counter
@@ -313,6 +322,8 @@ BattleResult goblinMageBattle() {
             printf("You can't resist such terrifying power at all and evaporated in the flame...\n");
           }
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         switch (_goblinChargeCounter) {

@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "../game.h"
 #include "../console.h"
 #include "level_1.h"
@@ -58,6 +59,8 @@ BattleResult slimeBattle() {
           displaySeparatorLine();
           printf("A critical strike is performed!\n");
           printf("Congratulations! You won the fight.\n");
+          free(player);
+          free(enemy);
           return BattleWin;
         }
         if (player->curHp <= 0) { //Failed
@@ -66,6 +69,8 @@ BattleResult slimeBattle() {
           printf("Slime rushed swiftly and consumed you!\n");
           getchar();
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         //Not yet killed
@@ -84,6 +89,8 @@ BattleResult slimeBattle() {
           printf("You raised the shield and tried to defend.\n");
           printf("But enemy countered your defense...\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         printf("You raised the shield and defended.\n");
@@ -95,6 +102,8 @@ BattleResult slimeBattle() {
       }
       case Withdraw: {
         if (randf() <= escapeChance) {
+          free(player);
+          free(enemy);
           return BattleEscape;
         }
         printf("Slime stuck your legs.\n");
@@ -104,6 +113,8 @@ BattleResult slimeBattle() {
           displaySeparatorLine();
           printf("Slime caught you and consumed your body. How poor you are!\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         printf("You were distracted and caught by slimes. You lost %d damage.\n", (int) slimeCaused);

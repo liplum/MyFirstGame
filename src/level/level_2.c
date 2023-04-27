@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "../game.h"
 #include "level_2.h"
 #include "../console.h"
@@ -100,6 +101,8 @@ BattleResult giantRatBattle() {
           printf("You made a critical strike on the rat!\n");
           printf("Congratulations! You won the fight.\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleWin;
         }
         if (player->curHp <= 0) { //Failed
@@ -113,6 +116,8 @@ BattleResult giantRatBattle() {
           }
           printf("The giant rat suddenly hit you with a fatal blow!\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         //Not yet killed
@@ -150,6 +155,8 @@ BattleResult giantRatBattle() {
           }
           printf("But giant rat countered your defense...\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         printf("You raised the shield and defended.\n");
@@ -164,6 +171,8 @@ BattleResult giantRatBattle() {
       }
       case Withdraw: {
         if (randf() <= escapeChance) {
+          free(player);
+          free(enemy);
           return BattleEscape;
         }
         // update counter
@@ -175,6 +184,8 @@ BattleResult giantRatBattle() {
           displaySeparatorLine();
           printf("You were held by the giant rat, and it bit off your neck!\n");
           getchar();
+          free(player);
+          free(enemy);
           return BattleLoss;
         }
         printf("You were controlled by a giant rat, and it bit at your neck causing %d damage!\n",
