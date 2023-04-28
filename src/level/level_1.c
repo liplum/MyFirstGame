@@ -41,7 +41,7 @@ BattleResult slimeBattle() {
   printf("Start fighting!");
   getchar();
 
-  printf("Your Hp is %d. Slime's is %d.", (int) player->curHp, (int) enemy->curHp);
+  printf("Your HP is %d. Slime HP is %d.", (int) player->curHp, (int) enemy->curHp);
   getchar();
 
   while (true) {

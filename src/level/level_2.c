@@ -51,7 +51,7 @@ BattleResult giantRatBattle() {
   printf("You have to fight again!");
   getchar();
 
-  printf("Your Hp is %d. Rat's is %d.", (int) player->curHp, (int) enemy->curHp);
+  printf("Your HP is %d. Rat's is %d.", (int) player->curHp, (int) enemy->curHp);
   getchar();
   // Skill: Whenever rat attacks twice in a row,
   // the third Attack will be a critical strike (this Attack does not count as two consecutive attacks),

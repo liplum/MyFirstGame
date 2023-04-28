@@ -50,7 +50,7 @@ BattleResult goblinMageBattle() {
   printf("You have no choice but keep fighting!");
   getchar();
 
-  printf("Your Hp is %d. Goblin Mage Hp is %d.", (int) player->curHp, (int) enemy->curHp);
+  printf("Your HP is %d. Goblin Mage HP is %d.", (int) player->curHp, (int) enemy->curHp);
   getchar();
   // Skill 1:
   // Each round has a 50% chance to charge for two turns (it won't trigger itself during the charge),

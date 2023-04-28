@@ -61,7 +61,7 @@ void displayNewTurnBanner(Player *player, Enemy *enemy, int turn) {
   printf("[Turn %d]\n", turn);
   printf("Your HP:\n");
   printf("\t|%s| %d.\n", createHealthBar(player->curHp, player->type->maxHp, healthBarWidth), (int) player->curHp);
-  printf("%s Hp:\n", enemy->type->name);
+  printf("%s HP:\n", enemy->type->name);
   printf("\t|%s| %d.\n", createHealthBar(enemy->curHp, enemy->type->maxHp, healthBarWidth), (int) enemy->curHp);
 }
 
